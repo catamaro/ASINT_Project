@@ -1,0 +1,2 @@
+FLASK_APP=videos_db.py
+FLASK_DEBUG=1
