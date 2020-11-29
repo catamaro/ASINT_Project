@@ -1,17 +1,15 @@
 from flask import Flask
-from app import app, fenix_blueprint
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import jsonify, url_for
-from flask import session
+from flask import render_template, redirect, request, session, url_for, jsonify
+from UserManager import app, fenix_blueprint
 
 
 @app.route('/')
+#@app.route('/login')
 def home_page():
     # The access token is generated everytime the user authenticates into FENIX
     print(fenix_blueprint.session.authorized)
     print("Access token: "+ str(fenix_blueprint.session.access_token))
+    #redirect(url_for("fenix-example.login"))
     return render_template("appPage.html", loggedIn = fenix_blueprint.session.authorized)
 
 
