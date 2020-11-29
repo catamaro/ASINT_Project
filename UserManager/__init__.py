@@ -1,6 +1,5 @@
 from flask import Flask, request
 #from sqlalchemy import SQLAlchemy
-#from flask_bootstrap import Bootstrap
 from flask_dance.consumer import OAuth2ConsumerBlueprint
 
 from config import Config
@@ -9,8 +8,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 #db = SQLAlchemy(app)
-
-#bootstrap = Bootstrap(app)
 
 fenix_blueprint = OAuth2ConsumerBlueprint(
     "fenix-example", __name__,

@@ -1,0 +1,2 @@
+FLASK_APP=qa.py
+FLASK_DEBUG=1

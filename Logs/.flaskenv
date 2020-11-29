@@ -1,0 +1,2 @@
+FLASK_APP=logs.py
+FLASK_DEBUG=1
