@@ -1,7 +1,20 @@
 from flask import Flask
 from flask import render_template, redirect, request, session, url_for, jsonify
-from UserManager import app, fenix_blueprint
+from UserManager import app, fenix_blueprint, db
 
+
+#--------------- routes a implementar ---------------#
+
+# @app.route('/login')
+# def login():
+
+# @app.route('/users')
+# def users():
+
+# @app.route('/users/<int:id>')
+# def get_user():
+
+#--------------- routes a implementar ---------------#
 
 @app.route('/')
 #@app.route('/login')
