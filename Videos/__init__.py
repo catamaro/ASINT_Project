@@ -1,12 +1,7 @@
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
-
+from flask import Flask
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = SQLAlchemy(app)
-
-
-from Videos import videos_db, routes
+from Videos import videos_db, routes, models, database
