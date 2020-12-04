@@ -1,2 +1,3 @@
 FLASK_APP=user_manager.py
 FLASK_DEBUG=1
+FLASK_RUN_PORT=5004
