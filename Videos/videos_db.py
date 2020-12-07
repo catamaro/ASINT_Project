@@ -37,6 +37,7 @@ def newVideo(description , url):
     try:
         app.session.add(vid)
         app.session.commit()
+        print(vid.id)
         app.session.close()
         return vid.id
     except:

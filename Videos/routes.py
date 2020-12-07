@@ -3,6 +3,17 @@ from flask import abort, render_template, redirect, request, session, url_for
 from Videos import app
 from Videos.videos_db import *
 
+from sqlalchemy.orm import scoped_session
+from flask import Flask, _app_ctx_stack
+from Videos import models
+from Videos.database import SessionLocal, engine
+
+
+models.Base.metadata.create_all(bind=engine)
+
+app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
+
+
 @app.route("/API/videos/", methods=['GET'])
 def returnsVideosJSON():
     return {"videos": listVideosDICT()}
