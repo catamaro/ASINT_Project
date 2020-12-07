@@ -15,14 +15,12 @@ def load_videos():
 
 @app.route("/API/proxy_videos/<int:id>/", methods=['GET'])
 def load_single_video(id):
-   url = "http://127.0.0.1:5002/API/videos/" + str(id)
-   response = requests.get(url=url)
+   response = requests.get(url="http://127.0.0.1:5002/API/videos/" + str(id))
    return response.json()
 
 @app.route("/API/proxy_videos/<int:id>/views", methods=['PUT', 'PATCH'])
 def add_view(id):
-   url = "http://127.0.0.1:5002/API/videos/" + str(id) + "/views"
-   response = requests.put(url=url)
+   response = requests.put(url="http://127.0.0.1:5002/API/videos/" + str(id) + "/views")
    return response.json()
    
 @app.route("/API/proxy_videos/", methods=['POST'])
