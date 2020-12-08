@@ -42,6 +42,10 @@ def before_req():
 def index(): 
    return render_template("index.html")
 
+@app.route("/QA/<int:id>")
+def qa_endpoint(id): 
+   return render_template("qa.html", id=id)
+
 @app.route("/API/proxy_videos/", methods=['GET'])
 def load_videos():
    # make REST request to video micro service
@@ -63,7 +67,7 @@ def create_video():
 @app.route("/API/proxy_videos/<int:id>/", methods=['GET'])
 def load_single_video(id):
    # make REST request to video micro service
-   response = requests.get(url="http://127.0.0.1:5002/API/videos/" + str(id))
+   response = requests.get(url="http://127.0.0.1:5002/API/videos/" + str(id)+"/")
    if response.status_code != 200:
       abort(500)
    return response.json()
@@ -75,3 +79,40 @@ def add_view(id):
    if response.status_code != 200:
       abort(500)
    return response.json()
+
+#----------------------------------qa--------------------------------------#
+
+@app.route("/API/proxy_question/<int:id>/", methods=['POST'])
+def create_question(id):
+   # make REST request to video micro service
+   request_data = request.get_json()
+   response = requests.post("http://127.0.0.1:5001/API/question/"+str(id)+"/", json=request_data)
+   if response.status_code != 200:
+      abort(500)
+   return response.json() 
+
+@app.route("/API/proxy_question/", methods=['GET'])
+def load_questions():
+   # make REST request to video micro service
+   response = requests.get("http://127.0.0.1:5001/API/question/")
+   if response.status_code != 200:
+      abort(500)
+   return response.json() 
+
+@app.route("/API/proxy_answer/<int:id>/", methods=['POST'])
+def create_answer(id):
+   # make REST request to video micro service
+   request_data = request.get_json()
+   response = requests.post("http://127.0.0.1:5001/API/answer/"+str(id)+"/", json=request_data)
+   if response.status_code != 200:
+      abort(500)
+
+   return response.json() 
+
+@app.route("/API/proxy_answer/<int:id>/", methods=['GET'])
+def load_answers(id):
+   # make REST request to video micro service
+   response = requests.get("http://127.0.0.1:5001/API/answer/"+str(id)+"/")
+   if response.status_code != 200:
+      abort(500)
+   return response.json() 

@@ -42,11 +42,10 @@ def newVideoView(id):
 
 
 def newVideo(description, url):
-    video = YTVideo.query.filter_by(url=url).first()
+    video = app.session.query(YTVideo).filter_by(url=url).first()
     if video is not None:
-        raise ValidationError('Video already in database.')
         return None
-
+    
     vid = YTVideo(description=description, url=url)
     try:
         app.session.add(vid)

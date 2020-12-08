@@ -18,7 +18,7 @@ function updateVideostable() {
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
                 $('#videosTable > tbody:last-child').
-                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '"></td></tr>');
+                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">'+ '</td><td>' + "<a href='/QA/"+ v["video_id"] + "'>" + "Select" + "</a>" + '</td></tr>');
                 getVideoViews(v["video_id"])
             });
 
@@ -58,50 +58,6 @@ $(document).ready(function () {
         newVideoURl = $("#newVideoURL").val()
         newVideoDESC = $("#newVideoDescription").val()
         addNewVideo(newVideoURl, newVideoDESC)
-    })
-
-    var vPlayer = videojs('videoPlayer');
-
-    $("#formPlayVideo").submit(function (e) {
-        e.preventDefault()
-
-        videoID = $("#playVideoID").val()
-
-        $.ajax({
-            url: '/API/proxy_videos/' + videoID + '/',
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                console.log(data)
-                url = data['url']
-                console.log(url)
-
-                vPlayer.src({ "type": "video/youtube", "src": url });
-                vPlayer.play()
-
-                $.ajax({
-                    url: '/API/proxy_videos/' + videoID + '/views',
-                    type: "PUT",
-                    dataType: "json",
-                    success: function (data) {
-                        console.log(data)
-                        updateVideostable()
-                    }
-                })
-            }
-        });
-    })
-
-    $("#buttonVideoPause").click(function () {
-        vPlayer.pause()
-        var pauseTime = vPlayer.currentTime()
-        console.log(pauseTime)
-        $("#resumetime").val(pauseTime)
-
-    })
-    $("#buttonVideoResume").click(function () {
-        vPlayer.currentTime(parseFloat($("#resumetime").val()))
-        vPlayer.play()
     })
 });
 
