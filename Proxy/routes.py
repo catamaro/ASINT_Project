@@ -46,6 +46,8 @@ def index():
 def load_videos():
    # make REST request to video micro service
    response = requests.get("http://127.0.0.1:5002/API/videos/")
+   if response.status_code != 200:
+      abort(500)
    return response.json() 
 
 @app.route("/API/proxy_videos/", methods=['POST'])
@@ -53,6 +55,8 @@ def create_video():
    # make REST request to video micro service
    request_data = request.get_json()
    response = requests.post("http://127.0.0.1:5002/API/videos/", json=request_data)
+   if response.status_code != 200:
+      abort(500)
 
    return response.json() 
 
@@ -60,10 +64,14 @@ def create_video():
 def load_single_video(id):
    # make REST request to video micro service
    response = requests.get(url="http://127.0.0.1:5002/API/videos/" + str(id))
+   if response.status_code != 200:
+      abort(500)
    return response.json()
 
 @app.route("/API/proxy_videos/<int:id>/views", methods=['PUT', 'PATCH'])
 def add_view(id):
    # make REST request to video micro service
    response = requests.put(url="http://127.0.0.1:5002/API/videos/" + str(id) + "/views")
+   if response.status_code != 200:
+      abort(500)
    return response.json()
