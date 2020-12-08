@@ -12,114 +12,7 @@
   <script src="http://vjs.zencdn.net/7.8.4/video.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
 
-  <script>
-
-    function getVideoViews(videoID) {
-      $.ajax({
-        url: '/API/proxy_videos/' + videoID + '/',
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-          console.log(data)
-          $("#nviews" + videoID).html(data['views'])
-          console.log("update the number of views on the table for" + videoID)
-        },
-      })
-    }
-    function updateVideostable() {
-      $.ajax({
-        url: '/API/proxy_videos/',
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-          console.log(data);
-          $('#videosTable > tbody:last-child').empty()
-          data["videos"].forEach(v => {
-            console.log(v["video_id"] + " " + v["description"])
-            $('#videosTable > tbody:last-child').
-              append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '"></td></tr>');
-            getVideoViews(v["video_id"])
-          });
-        }
-      });
-
-    }
-    function addNewVideo(url, description) {
-      let requestData = { "description": description, 'url': url }
-      $.ajax({
-        url: '/API/proxy_videos/',
-        type: "POST",
-        dataType: "json",
-        contentType: 'application/json',
-        data: JSON.stringify(requestData),
-        success: function (data) {
-          console.log("resppnse for video creation" + data)
-          console.log(data)
-          updateVideostable()
-        }
-      });
-    }
-    $(document).ready(function () {
-      updateVideostable()
-      $("#buttonUpdateVideotable").click(
-        function () {
-          updateVideostable()
-        }
-      )
-
-
-      $("#buttonAddVideo").click(function () {
-        newVideoURl = $("#newVideoURL").val()
-        newVideoDESC = $("#newVideoDescription").val()
-        addNewVideo(newVideoURl, newVideoDESC)
-      })
-
-      var vPlayer = videojs('videoPlayer');
-
-      $("#buttonVideoPause").click(function () {
-        vPlayer.pause()
-        var pauseTime = vPlayer.currentTime()
-        console.log(pauseTime)
-        $("#resumetime").val(pauseTime)
-
-      })
-      $("#buttonVideoResume").click(function () {
-        vPlayer.currentTime(parseFloat($("#resumetime").val()))
-        vPlayer.play()
-      })
-
-
-      $("#buttonPlayVideo").click(function () {
-        videoID = $("#playVideoID").val()
-
-        $.ajax({
-          url: '/API/proxy_videos/' + videoID + '/',
-          type: "GET",
-          dataType: "json",
-          success: function (data) {
-            console.log(data)
-            url = data['url']
-            console.log(url)
-
-            vPlayer.src({ "type": "video/youtube", "src": url });
-            vPlayer.play()
-
-            $.ajax({
-              url: '/API/proxy_videos/' + videoID + '/views',
-              type: "PUT",
-              dataType: "json",
-              success: function (data) {
-                console.log(data)
-                updateVideostable()
-              }
-            })
-          }
-        });
-      })
-
-    });
-
-  </script>
+  <script src="./static/index.js"></script>
 
 </head>
 
@@ -136,28 +29,31 @@
     <tbody>
     </tbody>
   </table>
-  <button class="ui button" id="buttonUpdateVideotable">
-    Update List
-  </button>
+
+  <button class="ui button" id="buttonUpdateVideotable"> Update List</button>
 
   <h3>Add a new Video</h3>
-  <div class="ui input">
-    <input type="text" placeholder="Video URL" id="newVideoURL">
-  </div>
-  <div class="ui input">
-    <input type="text" placeholder="Video Description" id="newVideoDescription">
-  </div>
-  <button class="ui button" id="buttonAddVideo">
-    Add new Video
-  </button>
+  <form id="formAddVideo">
+    <div class="ui input">
+      <input type="url" placeholder="Video URL" id="newVideoURL" required>
+    </div>
 
-  <h3>Play Video</h3>
-  <div class="ui input">
-    <input type="text" placeholder="Video id" id="playVideoID">
-  </div>
-  <button class="ui button" id="buttonPlayVideo">
-    Play
-  </button>
+    <div class="ui input">
+      <input type="text" placeholder="Video Description" id="newVideoDescription" required>
+    </div>
+    <button type="submit" class="ui button" id="buttonAddVideo">
+      Add new Video
+    </button>
+  </form>
+
+  <form id="formPlayVideo">
+    <h3>Play Video</h3>
+    <div class="ui input">
+      <input type="number" placeholder="Video id" id="playVideoID" required>
+    </div>
+    <button type="submit" class="ui button" id="buttonPlayVideo"> Play</button>
+  </form>
+
   <br>
 
   <video id="videoPlayer" controls class="video-js vjs-default-skin" width="640"
