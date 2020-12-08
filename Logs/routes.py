@@ -10,7 +10,6 @@ from Logs.database import SessionLocal, engine
 
 import json
 
-
 models.Base.metadata.create_all(bind=engine)
 
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)

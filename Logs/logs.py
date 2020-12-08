@@ -2,11 +2,11 @@ from Logs import app
 from Logs.models import Event, Data_Creation
 
 def listLogs():
-    events = app.session.query(Events).all()
-    data_creation = app.session.query(Events).all()
+    events = app.session.query(Event).all()
+    data_creation = app.session.query(Data_Creation).all()
 
-    data = {"eventa": events, "data_creation": data_creation}
-    return data
+    #data = [events, data_creation]
+    return events
     app.session.close()
 
 def listLogsDICT():
@@ -15,6 +15,7 @@ def listLogsDICT():
     for l in ll:
         logs_dict = l.to_dictionary()
         ret_list.append(logs_dict)
+    
     return ret_list
 
 def newEvent(IP , endpoint):
