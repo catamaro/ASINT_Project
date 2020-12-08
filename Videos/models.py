@@ -5,7 +5,7 @@ from Videos.database import Base
 
 class YTVideo(Base):
     __tablename__ = 'YTVideo'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     description = Column(String(128))
     url = Column(String(256))
     views = Column(Integer, default = 0)

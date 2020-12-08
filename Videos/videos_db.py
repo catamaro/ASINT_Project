@@ -2,8 +2,9 @@ from Videos import app
 from Videos.models import YTVideo
 
 def listVideos():
-    return app.session.query(YTVideo).all()
+    lv = app.session.query(YTVideo).all()
     app.session.close()
+    return lv
 
 def listVideosDICT():
     ret_list = []
@@ -34,10 +35,13 @@ def newVideoView(id):
 
 def newVideo(description , url):
     vid = YTVideo(description = description, url = url)
+    
     try:
         app.session.add(vid)
         app.session.commit()
-        app.session.close()
+        #print(vid)
+        #app.session.close()
         return vid.id
-    except:
+    except Exception as e:
+        print(e)
         return None
