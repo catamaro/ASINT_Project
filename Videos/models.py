@@ -6,9 +6,10 @@ from Videos.database import Base
 class YTVideo(Base):
     __tablename__ = 'YTVideo'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    url = Column(String(256), unique=True)
     description = Column(String(128))
-    url = Column(String(256))
     views = Column(Integer, default = 0)
+    
     def __repr__(self):
         return "<YouTubeVideo (id=%d Description=%s, URL=%s, Views=%s>" % (
                                 self.id, self.description, self.url,  self.views)
