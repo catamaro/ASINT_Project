@@ -3,9 +3,8 @@ from Videos.models import YTVideo
 
 
 def listVideos():
-    lv = app.session.query(YTVideo).all()
+    return app.session.query(YTVideo).all()
     app.session.close()
-    return lv
 
 
 def listVideosDICT():
@@ -51,9 +50,8 @@ def newVideo(description, url):
     try:
         app.session.add(vid)
         app.session.commit()
-        #print(vid.id)
-        #app.session.close()
+        print(vid.id)
+        app.session.close()
         return vid.id
-    except Exception as e:
-        print(e)
+    except:
         return None

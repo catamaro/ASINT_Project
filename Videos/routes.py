@@ -1,18 +1,7 @@
 from flask import Flask
-from flask import _app_ctx_stack, abort, render_template, redirect, request, session, url_for
-from Videos import models, app
+from flask import abort, render_template, redirect, request, session, url_for
+from Videos import app
 from Videos.videos_db import *
-from Videos.database import SessionLocal, engine
-from sqlalchemy.orm import scoped_session
-
-models.Base.metadata.create_all(bind=engine)
-
-app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
-app.session.expire_on_commit = False
-
-@app.route("/")
-def index():
-   return render_template("index.html")
 
 from sqlalchemy.orm import scoped_session
 from flask import Flask, _app_ctx_stack
@@ -35,7 +24,6 @@ def createNewVideo():
     ret = False
     try:
         ret = newVideo(j["description"], j['url'])
-        print(ret)
     except:
         abort(400)
         #the arguments were incorrect
