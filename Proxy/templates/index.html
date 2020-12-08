@@ -33,6 +33,7 @@
   <button class="ui button" id="buttonUpdateVideotable"> Update List</button>
 
   <h3>Add a new Video</h3>
+
   <form id="formAddVideo">
     <div class="ui input">
       <input type="url" placeholder="Video URL" id="newVideoURL" required>
@@ -46,10 +47,11 @@
     </button>
   </form>
 
+  <h3>Play Video</h3>
+
   <form id="formPlayVideo">
-    <h3>Play Video</h3>
     <div class="ui input">
-      <input type="number" placeholder="Video id" id="playVideoID" required>
+      <input type="number" step="1" min="0" max="" placeholder="Video id" id="playVideoID" required>
     </div>
     <button type="submit" class="ui button" id="buttonPlayVideo"> Play</button>
   </form>
@@ -59,16 +61,14 @@
   <video id="videoPlayer" controls class="video-js vjs-default-skin" width="640"
     data-setup='{ "autoplay": true, "preload": "auto", "techOrder": ["youtube"], "sources": [{ "type": "video/youtube" }'>
   </video>
+
   <h3>Control Video</h3>
-  <button class="ui button" id="buttonVideoPause">
-    PAUSE Video
-  </button>
+
+  <button class="ui button" id="buttonVideoPause">PAUSE Video</button>
   <div class="ui input focus">
     <input type="text" id="resumetime">
   </div>
-  <button class="ui button" id="buttonVideoResume">
-    RESUME Video
-  </button>
+  <button class="ui button" id="buttonVideoResume">  RESUME Video</button>
 
 </body>
 

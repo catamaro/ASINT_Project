@@ -5,9 +5,7 @@ function getVideoViews(videoID) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            console.log(data)
             $("#nviews" + videoID).html(data['views'])
-            console.log("update the number of views on the table for" + videoID)
         },
     })
 }
@@ -17,14 +15,15 @@ function updateVideostable() {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            console.log(data);
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
-                console.log(v["video_id"] + " " + v["description"])
                 $('#videosTable > tbody:last-child').
                     append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '"></td></tr>');
                 getVideoViews(v["video_id"])
             });
+
+            max = document.getElementById('videosTable').rows.length - 1
+            $("#playVideoID").attr({"max": max});   
         }
     });
 
@@ -46,6 +45,7 @@ function addNewVideo(url, description) {
 }
 $(document).ready(function () {
     updateVideostable()
+
     $("#buttonUpdateVideotable").click(
         function () {
             updateVideostable()
