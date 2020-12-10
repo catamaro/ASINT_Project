@@ -18,7 +18,7 @@ from sqlalchemy.orm import scoped_session
 from flask import Flask, _app_ctx_stack
 from Videos import models
 from Videos.database import SessionLocal, engine
-
+import json
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -34,8 +34,9 @@ def createNewVideo():
     j = request.get_json()
     ret = False
     try:
+        print(j)
+        print(j["description"])
         ret = newVideo(j["description"], j['url'])
-        print(ret)
     except:
         abort(400)
         #the arguments were incorrect

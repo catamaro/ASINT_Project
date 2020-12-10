@@ -18,7 +18,7 @@ function updateVideostable() {
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
                 $('#videosTable > tbody:last-child').
-                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='/QA/" + v["video_id"] + "'>" + "Select" + "</a>" + '</td></tr>');
+                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">'+ '</td><td>' + "<a href='/QA/"+ v["video_id"] + "'>" + "Select" + "</a>" + '</td></tr>');
                 getVideoViews(v["video_id"])
             });
 
@@ -57,8 +57,11 @@ $(document).ready(function () {
 
         newVideoURl = $("#newVideoURL").val()
         newVideoDESC = $("#newVideoDescription").val()
+<<<<<<< HEAD
         newVideoUser = urlParams.get('ist_id')
 
+=======
+>>>>>>> fe7b8912a4c3d5f73d426db556c29570f55f5543
         addNewVideo(newVideoURl, newVideoDESC)
     })
 });

@@ -46,7 +46,7 @@ def newVideo(description, url):
     if video is not None:
         print('Video already in database.')
         return None
-
+    
     vid = YTVideo(description=description, url=url)
     try:
         app.session.add(vid)
