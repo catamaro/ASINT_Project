@@ -57,11 +57,8 @@ $(document).ready(function () {
 
         newVideoURl = $("#newVideoURL").val()
         newVideoDESC = $("#newVideoDescription").val()
-<<<<<<< HEAD
         newVideoUser = urlParams.get('ist_id')
 
-=======
->>>>>>> fe7b8912a4c3d5f73d426db556c29570f55f5543
         addNewVideo(newVideoURl, newVideoDESC)
     })
 });
