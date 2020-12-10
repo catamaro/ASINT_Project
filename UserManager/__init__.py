@@ -1,13 +1,10 @@
 from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
 from flask_dance.consumer import OAuth2ConsumerBlueprint
 
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
-db = SQLAlchemy(app)
 
 fenix_blueprint = OAuth2ConsumerBlueprint(
     "fenix-example", __name__,
@@ -23,4 +20,4 @@ fenix_blueprint = OAuth2ConsumerBlueprint(
 
 app.register_blueprint(fenix_blueprint)
 
-from UserManager import user_manager, routes
+from UserManager import user_manager, routes, models, database

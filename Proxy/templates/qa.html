@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.css">
+  <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.js">  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-xmlrpc/0.4.3/jquery.xmlrpc.js"> </script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
+  <script src="http://vjs.zencdn.net/7.8.4/video.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
+
+  <script src="/static/qa.js"></script>
+
+</head>
+
+<body>
+
+  <video id="videoPlayer" controls class="video-js vjs-default-skin" width="640"
+    data-setup='{ "autoplay": true, "preload": "auto", "techOrder": ["youtube"], "sources": [{ "type": "video/youtube" }'>
+  </video>
+
+  <h3>Control Video</h3>
+
+  <button class="ui button" id="buttonVideoPause">PAUSE Video</button>
+  <div class="ui input focus">
+    <input type="text" id="resumetime">
+  </div>
+  <button class="ui button" id="buttonVideoResume"> RESUME Video</button>
+
+  <h3>List of Questions</h3>
+  <table class="ui celled table selectable" id="questionTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Video_ID</th>
+        <th>curr_time</th>
+        <th>user</th>
+        <th>text</th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <button class="ui button" id="buttonUpdateQuestionTable">Update List</button>
+
+  <button class="ui button" id="buttonAddQuestion">Add new Question</button>
+
+  <div id="add_question_div">
+    <div class="ui input">
+      <input type="text" placeholder="User" id="newUser">
+    </div>
+    <div class="ui input">
+      <input type="text" placeholder="Text" id="newText">
+    </div>
+    <button class="ui button" id="buttonSubmitQuestion">Submit new Question</button>
+  </div>
+
+  <div id="answers_div">
+
+    <h3>List of Answers</h3>
+    <table class="ui celled table selectable" id="answerTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>question id</th>
+          <th>user</th>
+          <th>text</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <button class="ui button" id="buttonUpdateAnswerTable">Update List</button>
+
+
+    <h3>Add a new Answer</h3>
+    <div class="ui input">
+      <input type="text" placeholder="User" id="newAUser">
+    </div>
+    <div class="ui input">
+      <input type="text" placeholder="Text" id="newAText">
+    </div>
+    <button class="ui button" id="buttonAddAnswer">Add new Answer</button>
+    <br></br>
+    <button onclick='answerhide()'>Hide answers</button>
+  </div>
+</body>
+
+</html>

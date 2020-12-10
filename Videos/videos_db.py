@@ -42,18 +42,19 @@ def newVideoView(id):
 
 
 def newVideo(description, url):
-    video = YTVideo.query.filter_by(url=url).first()
+    video = app.session.query(YTVideo).filter_by(url=url).first()
     if video is not None:
-        raise ValidationError('Video already in database.')
+        print('Video already in database.')
         return None
 
     vid = YTVideo(description=description, url=url)
     try:
         app.session.add(vid)
         app.session.commit()
-        #print(vid.id)
-        #app.session.close()
-        return vid.id
+        v_id=vid.id
+        print("ola")
+        app.session.close()
+        return v_id
     except Exception as e:
         print(e)
         return None

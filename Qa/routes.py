@@ -5,22 +5,6 @@ from Qa.qa_db import *
 from Qa.database import SessionLocal, engine
 from sqlalchemy.orm import scoped_session
 
-#--------------- routes a implementar ---------------#
-
-# @app.route('API/questions', methods = ["GET"])
-# def list_questions():
-
-# @app.route('API/questions', methods = ["POST"])
-# def create_question():    
-
-# @app.route('API/answers/<int:id>', methods = ["GET"])
-# def list_answers(): 
-
-# @app.route('API/answers/<int:id>', methods = ["POST"])
-# def create_answer():
-
-#--------------- routes a implementar ---------------#
-
 models.Base.metadata.create_all(bind=engine)
 
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
@@ -29,12 +13,12 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 def index():
    return render_template("index.html")
 
-@app.route("/API/qa/", methods=['GET'])
+@app.route("/API/question/", methods=['GET'])
 def returnsQuestionJSON():
     return {"qa": listQuestionDICT()}
 
 
-@app.route("/API/qa/<int:id>/", methods=['GET'])
+@app.route("/API/question/<int:id>/", methods=['GET'])
 def returnSingleQuestionJSON(id):
     try:
         v = getQuestionDICT(id)
@@ -54,13 +38,12 @@ def returnsAnswerJSON(id):
         abort(404)
 
 
-@app.route("/API/qa/", methods=['POST'])
-def createNewQuestion():
+@app.route("/API/question/<int:id>/", methods=['POST'])
+def createNewQuestion(id):
     j = request.get_json()
     ret = False
     try:
-        print(j["text"])
-        ret = newQuestion(j["video_id"], j['curr_time'], j['user'], j['text'])
+        ret = newQuestion(id, j['curr_time'], j['user'], j['text'])
         print(ret)
     except:
         abort(400)
@@ -71,13 +54,13 @@ def createNewQuestion():
         abort(409)
     #if there is an erro return ERROR 409
 
-@app.route("/API/answer/", methods=['POST'])
-def createNewAnswer():
+@app.route("/API/answer/<int:id>/", methods=['POST'])
+def createNewAnswer(id):
     j = request.get_json()
     ret = False
     try:
         print(j["a_text"])
-        ret = newAnswer(j['question_id'], j['a_user'], j['a_text'])
+        ret = newAnswer(id, j['a_user'], j['a_text'])
         print(ret)
     except:
         abort(400)
