@@ -10,6 +10,8 @@ function getVideoViews(videoID) {
     })
 }
 function updateVideostable() {
+    const urlParams = new URLSearchParams(window.location.search);
+    ist_id = urlParams.get('id')
     $.ajax({
         url: '/API/proxy_videos/',
         type: "GET",
@@ -18,7 +20,7 @@ function updateVideostable() {
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
                 $('#videosTable > tbody:last-child').
-                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">'+ '</td><td>' + "<a href='/QA/"+ v["video_id"] + "'>" + "Select" + "</a>" + '</td></tr>');
+                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">'+ '</td><td>' + "<a href='/QA/"+ v["video_id"] + "/" + ist_id + "'>" + "Select" + "</a>" + '</td></tr>');
                 getVideoViews(v["video_id"])
             });
 
@@ -42,9 +44,9 @@ function addNewVideo(url, description) {
     });
 }
 $(document).ready(function () {
-    updateVideostable()
-
     const urlParams = new URLSearchParams(window.location.search);
+
+    updateVideostable()
 
     $("#buttonUpdateVideotable").click(
         function () {

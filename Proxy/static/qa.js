@@ -1,5 +1,6 @@
 var pathname = window.location.pathname;
 var video_id = pathname.split("/")[2]
+var user_id = pathname.split("/")[3]
 
 function updateQuestiontable() {
   $.ajax({
@@ -40,8 +41,8 @@ function updateAnswertable(question_num) {
     }
   });
 }
-function addNewQuestion(curr_time, user, text) {
-  let requestData = { "curr_time": curr_time, "user": user, "text": text }
+function addNewQuestion(curr_time, text) {
+  let requestData = { "curr_time": curr_time, "user": user_id, "text": text }
   $.ajax({
     url: '/API/proxy_question/' + video_id + '/',
     type: "POST",
@@ -55,9 +56,9 @@ function addNewQuestion(curr_time, user, text) {
     }
   });
 }
-function addNewAnswer(a_user, a_text) {
+function addNewAnswer(a_text) {
 
-  let requestData = { "a_user": a_user, "a_text": a_text }
+  let requestData = { "a_user": user_id, "a_text": a_text }
   $.ajax({
     url: '/API/proxy_answer/' + question_num + '/',
     type: "POST",
@@ -76,6 +77,7 @@ $(document).ready(function () {
   answerhide()
   addquestionhide()
   loadVideo()
+
   $("#buttonUpdateQuestiontable").click(
     function () {
       updateQuestiontable()
@@ -95,17 +97,15 @@ $(document).ready(function () {
   $("#buttonSubmitQuestion").click(function () {
     var pauseTime = vPlayer.currentTime()
     newCurrTime = pauseTime
-    newUser = $("#newUser").val()
     newText = $("#newText").val()
-    addNewQuestion(newCurrTime, newUser, newText)
+    addNewQuestion(newCurrTime, newText)
     addquestionhide()
     vPlayer.currentTime(parseFloat($("#resumetime").val()))
     vPlayer.play()
   })
   $("#buttonAddAnswer").click(function () {
-    newAUser = $("#newAUser").val()
     newAText = $("#newAText").val()
-    addNewAnswer(newAUser, newAText)
+    addNewAnswer(newAText)
   })
 
   var vPlayer = videojs('videoPlayer');

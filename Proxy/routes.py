@@ -63,9 +63,9 @@ def login():
     return redirect("http://127.0.0.1:5004/")
 
 
-@app.route("/QA/<int:id>")
-def qa_endpoint(id): 
-   return render_template("qa.html", id=id)
+@app.route("/QA/<int:id>/<ist_id>")
+def qa_endpoint(id, ist_id): 
+   return render_template("qa.html", id=id, ist_id=ist_id)
 
 @app.route("/API/proxy_videos/", methods=['GET'])
 def load_videos():
