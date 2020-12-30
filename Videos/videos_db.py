@@ -52,7 +52,6 @@ def newVideo(description, url):
         app.session.add(vid)
         app.session.commit()
         v_id=vid.id
-        print("ola")
         app.session.close()
         return v_id
     except Exception as e:

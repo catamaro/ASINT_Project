@@ -46,7 +46,7 @@ def createNewVideo():
         abort(409)
     #if there is an erro return ERROR 409
 
-@app.route("/API/videos/<int:id>/")
+@app.route("/API/videos/<int:id>/", methods=['GET'])
 def returnSingleVideoJSON(id):
     try:
         v = getVideoDICT(id)

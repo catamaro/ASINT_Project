@@ -13,15 +13,14 @@ app.session = scoped_session(
 app.session.expire_on_commit = False
 
 
-@app.route('/')
-def home_page():
+@app.route('/login')
+def login():
     if fenix_blueprint.session.authorized:
         resp = fenix_blueprint.session.get("/api/fenix/v1/person/")
 
         data = resp.json()
-
         try:
-            newUser(ist_id=data['username'], name=data['name'])
+            newUser(data['username'], data['name'])
         except:
             abort(400)
             # the arguments were incorrect
@@ -29,6 +28,27 @@ def home_page():
         return redirect("http://127.0.0.1:5005/redirect_login?id="+data['username']+'&name='+data['name'])
     
     return redirect(url_for('fenix-example.login'))
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    data = request.get_json()
+
+    user = app.session.query(User).filter(User.ist_id == data["ist_id"]).first()
+    user.auth = False
+
+    app.session.commit()
+    app.session.close()
+
+    return {"auth": False}
+
+
+@app.route('/API/user/<ist_id>', methods=['GET'])
+def getUser(ist_id):
+    try:
+        v = getUserDICT(ist_id)
+        return v
+    except:
+        abort(404)
 
 
 """ @app.route('/API/get_user/', methods=['GET'])

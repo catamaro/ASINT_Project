@@ -17,7 +17,19 @@
 </head>
 
 <body>
+  {% if is_authenticated %}
+  <a href="{{ url_for('logout', ist_id=ist_id, name=name) }}" class="ui button">Logout</a>
+  {% else %}
   <a href="{{ url_for('login') }}" class="ui button">Login</a>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-info success" role="alert">{{ message }}</div>
+      {% endfor %}
+  {% endif %}
+  {% endwith %}
 
   <h3>Welcome! {{name}} {{ist_id}}</h3>
 
