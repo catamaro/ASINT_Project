@@ -26,14 +26,16 @@ def login():
             # the arguments were incorrect
 
         return redirect("http://127.0.0.1:5005/redirect_login?id="+data['username']+'&name='+data['name'])
-    
     return redirect(url_for('fenix-example.login'))
+
 
 @app.route('/logout', methods=['POST'])
 def logout():
     data = request.get_json()
 
-    user = app.session.query(User).filter(User.ist_id == data["ist_id"]).first()
+    user = app.session.query(User).filter(
+        User.ist_id == data["ist_id"]).first()
+    
     user.auth = False
 
     app.session.commit()

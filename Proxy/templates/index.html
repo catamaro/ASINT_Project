@@ -35,12 +35,11 @@
   {% endif %}
   {% endwith %}
 
-  {% if is_authenticated %}
+  {% if auth %}
   <a href="{{ url_for('logout', ist_id=ist_id, name=name) }}" class="ui button">Logout</a>
   {% else %}
   <a href="{{ url_for('login') }}" class="ui button">Login</a>
   {% endif %}
-
 
 
   <br></br>
