@@ -44,7 +44,6 @@ def createNewQuestion(id):
     ret = False
     try:
         ret = newQuestion(id, j['curr_time'], j['user'], j['text'])
-        print(ret)
     except:
         abort(400)
         #the arguments were incorrect
@@ -59,9 +58,7 @@ def createNewAnswer(id):
     j = request.get_json()
     ret = False
     try:
-        print(j["a_text"])
         ret = newAnswer(id, j['a_user'], j['a_text'])
-        print(ret)
     except:
         abort(400)
         #the arguments were incorrect

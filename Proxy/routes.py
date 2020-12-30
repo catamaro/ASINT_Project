@@ -36,8 +36,10 @@ def before_req():
         else:
             data_type = "unknown"
 
+        user = request.json.get("user")
+
         # make REST request to logs micro service
-        data = {"data_type": data_type, "content": request.json, "user": "me"}
+        data = {"data_type": data_type, "content": request.json, "user": user}
         try:
             requests.post(
                 "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
@@ -65,9 +67,6 @@ def index():
     ist_id = request.args.get("ist_id", None)
     auth = request.args.get("auth", None)
 
-    print(auth)
-    print("estou no index")
-
     return render_template("index.html", name=name, ist_id=ist_id,
                            auth=auth)
 
@@ -93,7 +92,6 @@ def logout():
     name = request.args.get("name", None)
 
     request_data = {"ist_id": ist_id}
-    print(ist_id)
 
     try:
         resp = requests.post("http://127.0.0.1:5004/logout", json=request_data)
@@ -114,7 +112,6 @@ def login():
 
 @app.route("/QA/<int:id>/<ist_id>")
 def qa_endpoint(id, ist_id):
-    print(ist_id)
     return render_template("qa.html", id=id, ist_id=ist_id)
 
 
@@ -181,14 +178,11 @@ def create_question(id):
     # make REST request to video micro service
     request_data=request.get_json()
     try:
-        print("faill")
         response=requests.post(
             "http://127.0.0.1:5001/API/question/"+str(id)+"/", json=request_data)
         if response.status_code != 200:
             abort(500)
-        print("faill")
     except:
-        print("faill")
         return "failure"
 
     return response.json()

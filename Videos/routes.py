@@ -34,8 +34,6 @@ def createNewVideo():
     j = request.get_json()
     ret = False
     try:
-        print(j)
-        print(j["description"])
         ret = newVideo(j["description"], j['url'])
     except:
         abort(400)
