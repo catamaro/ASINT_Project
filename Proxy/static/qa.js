@@ -8,12 +8,18 @@ function updateQuestiontable() {
     type: "GET",
     dataType: "json",
     success: function (data) {
-      console.log(data);
+      if (data === "failure") {
+        handleError(xhr, status, ''); // manually trigger callback
+      }
+
       $('#questionTable > tbody:last-child').empty()
       data["qa"].forEach(q => {
         $('#questionTable > tbody:last-child').
           append('<tr> <td>' + q["Question"] + '</td><td>' + q["video_id"] + '</td><td>' + q["curr_time"] + '</td><td>' + q["user"] + '</td><td>' + q["text"] + '</td><td>' + "<button type='button' onclick='showanswers(this);' class='btn btn-default'>" + "Show answers" + "</button>" + '</td></tr>');
       });
+    },
+    error: function (xhr, textStatus, errorThrown) {
+      alert('Question and Answers service is down');
     }
   });
 }
@@ -32,12 +38,19 @@ function updateAnswertable(question_num) {
     type: "GET",
     dataType: "json",
     success: function (data) {
+      if (data === "failure") {
+        handleError(xhr, status, ''); // manually trigger callback
+      }
+
       $('#answerTable > tbody:last-child').empty()
       data["answer"].forEach(a => {
         console.log(a["Answer"] + " " + a["question_id"] + " " + a["a_user"] + " " + a["a_text"])
         $('#answerTable > tbody:last-child').
           append('<tr> <td>' + a["Answer"] + '</td><td>' + a["question_id"] + '</td><td>' + a["a_user"] + '</td><td>' + a["a_text"] + '</td></tr>');
       });
+    },
+    error: function (xhr, textStatus, errorThrown) {
+      alert('Question and Answers service is down');
     }
   });
 }
@@ -50,9 +63,15 @@ function addNewQuestion(curr_time, text) {
     contentType: 'application/json',
     data: JSON.stringify(requestData),
     success: function (data) {
+      if (data === "failure") {
+        handleError(xhr, status, ''); // manually trigger callback
+      }
       console.log("response for question creation" + data)
       console.log(data)
       updateQuestiontable()
+    },
+    error: function (xhr, textStatus, errorThrown) {
+      alert('Question and Answers service is down');
     }
   });
 }
@@ -66,9 +85,13 @@ function addNewAnswer(a_text) {
     contentType: 'application/json',
     data: JSON.stringify(requestData),
     success: function (data) {
-      console.log("response for Answer creation" + data)
-      console.log(data)
+      if (data === "failure") {
+        handleError(xhr, status, ''); // manually trigger callback
+      }
       updateAnswertable(question_num)
+    },
+    error: function (xhr, textStatus, errorThrown) {
+      alert('Question and Answers service is down');
     }
   });
 }
@@ -80,6 +103,7 @@ $(document).ready(function () {
 
   $("#buttonUpdateQuestiontable").click(
     function () {
+      console.log('stop clicking me!')
       updateQuestiontable()
     }
   )
@@ -88,9 +112,9 @@ $(document).ready(function () {
       updateAnswertable(question_num)
     }
   )
-    
+
   $("#buttonAddQuestion").click(function () {
-    vPlayer.pause()  
+    vPlayer.pause()
     addquestionshow()
   })
 
@@ -117,6 +141,9 @@ $(document).ready(function () {
       type: "GET",
       dataType: "json",
       success: function (data) {
+        if (data === "failure") {
+          handleError(xhr, status, ''); // manually trigger callback
+        }
         url = data['url']
 
         vPlayer.src({ "type": "video/youtube", "src": url });
@@ -126,7 +153,18 @@ $(document).ready(function () {
           url: '/API/proxy_videos/' + video_id + '/views',
           type: "PUT",
           dataType: "json",
+          success: function (data) {
+            if (data === "failure") {
+              handleError(xhr, status, ''); // manually trigger callback
+            }
+          },
+          error: function (xhr, textStatus, errorThrown) {
+            alert('Question and Answers service is down');
+          }
         })
+      },
+      error: function (xhr, textStatus, errorThrown) {
+        alert('Question and Answers service is down');
       }
     });
   }
@@ -144,11 +182,11 @@ $(document).ready(function () {
 });
 
 function addquestionshow() {
-    document.getElementById("add_question_div").style.display = "block";
-  }
-  function addquestionhide() {
-    document.getElementById("add_question_div").style.display = "none";
-  }
+  document.getElementById("add_question_div").style.display = "block";
+}
+function addquestionhide() {
+  document.getElementById("add_question_div").style.display = "none";
+}
 function answershow() {
   document.getElementById("answers_div").style.display = "block";
 }

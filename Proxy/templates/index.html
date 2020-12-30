@@ -13,25 +13,35 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
 
   <script src="./static/index.js"></script>
+  <link rel="icon" type="image/png" href="static/video.ico"/>
+
+  <title>Videos</title>
 
 </head>
 
 <body>
+  <h3>Welcome! {{name}} {{ist_id}}</h3>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages if message != 'Logs service is down' %}
+      <script>alert("{{ message }}")</script>
+      {% endfor %}
+      {% if messages[0] == 'Logs service is down' %}
+      <script>alert("Logs Service is down")</script>
+      {% endif %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
   {% if is_authenticated %}
   <a href="{{ url_for('logout', ist_id=ist_id, name=name) }}" class="ui button">Logout</a>
   {% else %}
   <a href="{{ url_for('login') }}" class="ui button">Login</a>
   {% endif %}
 
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-      {% for message in messages %}
-      <div class="alert alert-info success" role="alert">{{ message }}</div>
-      {% endfor %}
-  {% endif %}
-  {% endwith %}
 
-  <h3>Welcome! {{name}} {{ist_id}}</h3>
 
   <br></br>
 

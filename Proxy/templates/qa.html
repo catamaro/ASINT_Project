@@ -13,10 +13,22 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
 
   <script src="/static/qa.js"></script>
+  
+  <link rel="icon" type="image/png" href="../../static/qa.ico"/>
 
+  <title>Q&A</title>
 </head>
 
 <body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% if messages[0] == 'Logs service is down' %}
+      <script>alert("Logs Service is down")</script>
+      {% endif %}
+    </ul>
+  {% endif %}
+  {% endwith %}
 
   <video id="videoPlayer" controls class="video-js vjs-default-skin" width="640"
     data-setup='{ "autoplay": true, "preload": "auto", "techOrder": ["youtube"], "sources": [{ "type": "video/youtube" }'>
