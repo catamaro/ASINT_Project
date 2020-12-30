@@ -20,7 +20,13 @@
 </head>
 
 <body>
+  {% if name %}
+  {% if ist_id %}
   <h3>Welcome! {{name}} {{ist_id}}</h3>
+  {% endif %}
+  {% else %}
+  <h3>Welcome!</h3>
+  {% endif %}
 
   {% with messages = get_flashed_messages() %}
   {% if messages %}
