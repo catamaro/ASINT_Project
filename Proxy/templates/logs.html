@@ -19,10 +19,9 @@
 
 </head>
 
-<body>
-    <h3>List of logs</h3>
-    <br>
-    <h5>Events</h5>
+<body style="margin:5%;">
+    <h2>List of logs</h2>
+    <h3>Events</h3>
     <table class="ui celled table selectable" id="videosTable">
         <thead>
             <tr>
@@ -36,7 +35,7 @@
         </tbody>
     </table>
     <br>
-    <h5>Data Creation</h5>
+    <h3>Data Creation</h3>
     <table class="ui celled table selectable" id="videosTable">
         <thead>
             <tr>
@@ -50,4 +49,7 @@
         <tbody>
         </tbody>
     </table>
+
+    <a href="{{ url_for('index', ist_id=ist_id, name=name) }}" class="ui button">Go back</a>
+
 </body>

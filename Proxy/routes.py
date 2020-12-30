@@ -8,6 +8,7 @@ from Proxy.proxy import check_port
 import requests
 import json
 
+#----------------------------------logs--------------------------------------#
 
 # logs handler
 @app.before_request
@@ -60,15 +61,52 @@ def before_req():
         except:
             flash("Logs service is down")
 
+#----------------------------------proxy--------------------------------------#
+
 
 @app.route("/")
 def index():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
-    auth = request.args.get("auth", None)
+
+    if ist_id is not None: auth = True
+    else: auth = None
+
+    admin = None
+
+    if ist_id is not None:
+        try:
+            response = requests.get("http://127.0.0.1:5004/API/user/"+ist_id)
+            print(response.status_code)
+            if response.status_code != 200:
+                abort(500)
+
+            print(response.json())
+            
+            if response.json().get("admin") == 1: admin = True
+        except:
+            flash("Error retrieving data")
+
 
     return render_template("index.html", name=name, ist_id=ist_id,
-                           auth=auth)
+                           auth=auth, admin=admin)
+
+# admin page
+@app.route("/logs")
+def logs():
+    name = request.args.get("name", None)
+    ist_id = request.args.get("ist_id", None)
+
+    return render_template("logs.html", ist_id=ist_id, name=name)
+# admin page
+@app.route("/stats")
+def stats():
+    name = request.args.get("name", None)
+    ist_id = request.args.get("ist_id", None)
+
+    return render_template("statistics.html", ist_id=ist_id, name=name)
+
+#----------------------------------user--------------------------------------#
 
 
 @app.route("/redirect_login")
@@ -80,11 +118,7 @@ def get_id():
     if response.status_code != 200:
         abort(500)
 
-    auth = response.json().get("auth")
-
-    return redirect(url_for("index", name=name, ist_id=ist_id,
-                           auth=auth))
-
+    return redirect(url_for("index", name=name, ist_id=ist_id))
 
 @app.route("/logout")
 def logout():
@@ -109,10 +143,7 @@ def login():
         return redirect(url_for("index"))
 
 
-
-@app.route("/QA/<int:id>/<ist_id>")
-def qa_endpoint(id, ist_id):
-    return render_template("qa.html", id=id, ist_id=ist_id)
+#----------------------------------videos--------------------------------------#
 
 
 @app.route("/API/proxy_videos/", methods=['GET'])
@@ -225,3 +256,8 @@ def load_answers(id):
     except:
         return "failure"
     return response.json()
+
+@app.route("/QA/<int:id>/<ist_id>/<name>")
+def qa_endpoint(id, ist_id, name):
+    return render_template("qa.html", id=id, ist_id=ist_id, name=name)
+

@@ -17,7 +17,8 @@ function getVideoViews(videoID) {
 }
 function updateVideostable() {
     const urlParams = new URLSearchParams(window.location.search);
-    ist_id = urlParams.get('ist_id')
+    var ist_id = urlParams.get('ist_id')
+    var name = urlParams.get('name')
     if(ist_id == null){
         ist_id = "anonymous"
     }
@@ -34,7 +35,7 @@ function updateVideostable() {
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
                 $('#videosTable > tbody:last-child').
-                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='/QA/" + v["video_id"] + "/" + ist_id + "'>" + "Select" + "</a>" + '</td></tr>');
+                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='/QA/" + v["video_id"] + "/" + ist_id + "/" + name + "'>" + "Select" + "</a>" + '</td></tr>');
                 getVideoViews(v["video_id"])
             });
 
