@@ -2,6 +2,9 @@ var pathname = window.location.pathname;
 var video_id = pathname.split("/")[2]
 var user_id = pathname.split("/")[3]
 
+console.log(user_id)
+console.log(pathname)
+
 function updateQuestiontable() {
   $.ajax({
     url: '/API/proxy_question/',

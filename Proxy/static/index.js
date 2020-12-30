@@ -17,7 +17,11 @@ function getVideoViews(videoID) {
 }
 function updateVideostable() {
     const urlParams = new URLSearchParams(window.location.search);
-    ist_id = urlParams.get('id')
+    ist_id = urlParams.get('ist_id')
+    if(ist_id == null){
+        ist_id = "anonymous"
+    }
+
     $.ajax({
         url: '/API/proxy_videos/',
         type: "GET",

@@ -112,12 +112,13 @@ def login():
 
 
 
-@ app.route("/QA/<int:id>/<ist_id>")
+@app.route("/QA/<int:id>/<ist_id>")
 def qa_endpoint(id, ist_id):
+    print(ist_id)
     return render_template("qa.html", id=id, ist_id=ist_id)
 
 
-@ app.route("/API/proxy_videos/", methods=['GET'])
+@app.route("/API/proxy_videos/", methods=['GET'])
 def load_videos():
     # make REST request to video micro service
     try:
@@ -130,7 +131,7 @@ def load_videos():
     return response.json()
 
 
-@ app.route("/API/proxy_videos/", methods=['POST'])
+@app.route("/API/proxy_videos/", methods=['POST'])
 def create_video():
     # make REST request to video micro service
     request_data=request.get_json()
@@ -145,7 +146,7 @@ def create_video():
     return response.json()
 
 
-@ app.route("/API/proxy_videos/<int:id>/", methods=['GET'])
+@app.route("/API/proxy_videos/<int:id>/", methods=['GET'])
 def load_single_video(id):
     # make REST request to video micro service
     try:
@@ -159,7 +160,7 @@ def load_single_video(id):
     return response.json()
 
 
-@ app.route("/API/proxy_videos/<int:id>/views", methods=['PUT', 'PATCH'])
+@app.route("/API/proxy_videos/<int:id>/views", methods=['PUT', 'PATCH'])
 def add_view(id):
     # make REST request to video micro service
     try:
@@ -175,7 +176,7 @@ def add_view(id):
 #----------------------------------qa--------------------------------------#
 
 
-@ app.route("/API/proxy_question/<int:id>/", methods=['POST'])
+@app.route("/API/proxy_question/<int:id>/", methods=['POST'])
 def create_question(id):
     # make REST request to video micro service
     request_data=request.get_json()
@@ -193,7 +194,7 @@ def create_question(id):
     return response.json()
 
 
-@ app.route("/API/proxy_question/", methods=['GET'])
+@app.route("/API/proxy_question/", methods=['GET'])
 def load_questions():
     # make REST request to video micro service
     try:
@@ -205,7 +206,7 @@ def load_questions():
     return response.json()
 
 
-@ app.route("/API/proxy_answer/<int:id>/", methods=['POST'])
+@app.route("/API/proxy_answer/<int:id>/", methods=['POST'])
 def create_answer(id):
     # make REST request to video micro service
     request_data=request.get_json()
@@ -219,7 +220,7 @@ def create_answer(id):
     return response.json()
 
 
-@ app.route("/API/proxy_answer/<int:id>/", methods=['GET'])
+@app.route("/API/proxy_answer/<int:id>/", methods=['GET'])
 def load_answers(id):
     # make REST request to video micro service
     try:
