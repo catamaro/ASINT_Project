@@ -17,7 +17,8 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 
 @app.route("/API/logs", methods=['GET'])
 def returnLogsJSON():
-    return {"logs": listLogsDICT()}
+    lists = listLogsDICT()
+    return {"events": lists[0], "data_creation": lists[1]}
 
 @app.route('/API/logs/event', methods = ["POST"])
 def create_log_event():

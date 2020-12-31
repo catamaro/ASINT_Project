@@ -60,7 +60,7 @@ def newQuestion(video_id, curr_time, user, text):
         return None
 
 def newAnswer(question_id, a_user, a_text):
-    answ =  Answer(question_id = question_id, a_user = a_user, a_text = a_text)
+    answ = Answer(question_id = question_id, a_user = a_user, a_text = a_text)
     try:
         app.session.add(answ)
         app.session.commit()

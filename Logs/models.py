@@ -15,7 +15,7 @@ class Event(Base):
         return "<Log event (id=%d IP=%s, endpoint=%s, timestamp=%s>" % (
                                 self.id, self.IP, self.endpoint,  self.timestamp)
     def to_dictionary(self):
-        return {"log_id": self.id, "IP": self.IP, "endpoint": self.endpoint, "timestamp": self.timestamp}
+        return {"id": self.id, "IP": self.IP, "endpoint": self.endpoint, "timestamp": self.timestamp}
 
 class Data_Creation(Base):
     __tablename__ = 'Data_Creation'
@@ -29,4 +29,4 @@ class Data_Creation(Base):
         return "<Log event (id=%d type=%s, content=%s, timestamp=%s, user=%s>" % (
                                 self.id, self.data_type, self.content,  self.timestamp, self.user)
     def to_dictionary(self):
-        return {"log_id": self.id, "type": self.data_type, "content": self.content, "timestamp": self.timestamp, "user": self.user}
+        return {"id": self.id, "type": self.data_type, "content": self.content, "timestamp": self.timestamp, "user": self.user}

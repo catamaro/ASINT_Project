@@ -11,21 +11,24 @@ import json
 #----------------------------------logs--------------------------------------#
 
 # logs handler
+
+
 @app.before_request
 def before_req():
     if(request.method == 'GET'):
-        url = request.url.split('//')
-        url = url[1].split(':')
-        endpoint = url[1].split('/', 1)[1]
-        IP = url[0]
 
-        # make REST request to logs micro service
-        request_data = {"IP": IP, "endpoint": endpoint}
-        try:
-            resp = requests.post("http://127.0.0.1:5003/API/logs/event",
-                                 json=json.dumps(request_data))
-        except:
-            flash("Logs service is down")
+        IP = request.host
+        endpoint = request.path
+
+        # ignores java sript requests
+        if endpoint.split('/', 2)[1] != "static":
+            # make REST request to logs micro service
+            request_data = {"IP": IP, "endpoint": endpoint}
+            try:
+                resp = requests.post("http://127.0.0.1:5003/API/logs/event",
+                                     json=json.dumps(request_data))
+            except:
+                flash("Logs service is down")
 
     elif(request.method == 'POST'):
         if request.url.find("video") != -1:
@@ -38,9 +41,10 @@ def before_req():
             data_type = "unknown"
 
         user = request.json.get("user")
+        content = json.dumps(request.json)
 
         # make REST request to logs micro service
-        data = {"data_type": data_type, "content": request.json, "user": user}
+        data = {"data_type": data_type, "content": content, "user": user}
         try:
             requests.post(
                 "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
@@ -49,17 +53,33 @@ def before_req():
 
     elif(request.method == 'PUT' or request.method == 'PATCH'):
         url = request.url.split('/')
-        content = url[5]
+        video = url[5]
         if request.url.find("view") != -1:
             data_type = "view"
 
+        user = request.json.get("user")
+        content = json.dumps(request.json)
+
         # make REST request to logs micro service
-        data = {"data_type": data_type, "content": content, "user": "me"}
+        data = {"data_type": data_type, "content": content, "user": user}
         try:
             requests.post(
                 "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
         except:
             flash("Logs service is down")
+
+
+@app.route("/API/proxy_logs/", methods=['GET'])
+def load_logs():
+    # make REST request to video micro service
+    try:
+        response = requests.get("http://127.0.0.1:5003/API/logs")
+
+        if response.status_code != 200:
+            abort(500)
+    except:
+        return "failure"
+    return response.json()
 
 #----------------------------------proxy--------------------------------------#
 
@@ -69,29 +89,30 @@ def index():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
 
-    if ist_id is not None: auth = True
-    else: auth = None
+    if ist_id is not None:
+        auth = True
+    else:
+        auth = None
 
     admin = None
 
     if ist_id is not None:
         try:
             response = requests.get("http://127.0.0.1:5004/API/user/"+ist_id)
-            print(response.status_code)
             if response.status_code != 200:
                 abort(500)
 
-            print(response.json())
-            
-            if response.json().get("admin") == 1: admin = True
+            if response.json().get("admin") == 1:
+                admin = True
         except:
             flash("Error retrieving data")
-
 
     return render_template("index.html", name=name, ist_id=ist_id,
                            auth=auth, admin=admin)
 
 # admin page
+
+
 @app.route("/logs")
 def logs():
     name = request.args.get("name", None)
@@ -99,6 +120,8 @@ def logs():
 
     return render_template("logs.html", ist_id=ist_id, name=name)
 # admin page
+
+
 @app.route("/stats")
 def stats():
     name = request.args.get("name", None)
@@ -120,6 +143,7 @@ def get_id():
 
     return redirect(url_for("index", name=name, ist_id=ist_id))
 
+
 @app.route("/logout")
 def logout():
     ist_id = request.args.get("ist_id", None)
@@ -137,7 +161,8 @@ def logout():
 
 @app.route("/login")
 def login():
-    if check_port("5004") == 1: return redirect("http://127.0.0.1:5004/login")
+    if check_port("5004") == 1:
+        return redirect("http://127.0.0.1:5004/login")
     else:
         flash("User Manager service is down")
         return redirect(url_for("index"))
@@ -150,7 +175,7 @@ def login():
 def load_videos():
     # make REST request to video micro service
     try:
-        response=requests.get("http://127.0.0.1:5002/API/videos/")
+        response = requests.get("http://127.0.0.1:5002/API/videos/")
         if response.status_code != 200:
             abort(500)
     except:
@@ -162,9 +187,9 @@ def load_videos():
 @app.route("/API/proxy_videos/", methods=['POST'])
 def create_video():
     # make REST request to video micro service
-    request_data=request.get_json()
+    request_data = request.get_json()
     try:
-        response=requests.post(
+        response = requests.post(
             "http://127.0.0.1:5002/API/videos/", json=request_data)
         if response.status_code != 200:
             abort(500)
@@ -178,7 +203,7 @@ def create_video():
 def load_single_video(id):
     # make REST request to video micro service
     try:
-        response=requests.get(
+        response = requests.get(
             url="http://127.0.0.1:5002/API/videos/" + str(id)+"/")
         if response.status_code != 200:
             abort(500)
@@ -191,9 +216,11 @@ def load_single_video(id):
 @app.route("/API/proxy_videos/<int:id>/views", methods=['PUT', 'PATCH'])
 def add_view(id):
     # make REST request to video micro service
+    request_data = request.get_json()
+    print(request_data)
     try:
-        response=requests.put(
-            url="http://127.0.0.1:5002/API/videos/" + str(id) + "/views")
+        response = requests.put(
+            url="http://127.0.0.1:5002/API/videos/" + str(id) + "/views", json=request_data)
         if response.status_code != 200:
             abort(500)
     except:
@@ -207,9 +234,9 @@ def add_view(id):
 @app.route("/API/proxy_question/<int:id>/", methods=['POST'])
 def create_question(id):
     # make REST request to video micro service
-    request_data=request.get_json()
+    request_data = request.get_json()
     try:
-        response=requests.post(
+        response = requests.post(
             "http://127.0.0.1:5001/API/question/"+str(id)+"/", json=request_data)
         if response.status_code != 200:
             abort(500)
@@ -223,7 +250,7 @@ def create_question(id):
 def load_questions():
     # make REST request to video micro service
     try:
-        response=requests.get("http://127.0.0.1:5001/API/question/")
+        response = requests.get("http://127.0.0.1:5001/API/question/")
         if response.status_code != 200:
             abort(500)
     except:
@@ -234,9 +261,9 @@ def load_questions():
 @app.route("/API/proxy_answer/<int:id>/", methods=['POST'])
 def create_answer(id):
     # make REST request to video micro service
-    request_data=request.get_json()
+    request_data = request.get_json()
     try:
-        response=requests.post(
+        response = requests.post(
             "http://127.0.0.1:5001/API/answer/"+str(id)+"/", json=request_data)
         if response.status_code != 200:
             abort(500)
@@ -249,7 +276,7 @@ def create_answer(id):
 def load_answers(id):
     # make REST request to video micro service
     try:
-        response=requests.get(
+        response = requests.get(
             "http://127.0.0.1:5001/API/answer/"+str(id)+"/")
         if response.status_code != 200:
             abort(500)
@@ -257,7 +284,7 @@ def load_answers(id):
         return "failure"
     return response.json()
 
+
 @app.route("/QA/<int:id>/<ist_id>/<name>")
 def qa_endpoint(id, ist_id, name):
     return render_template("qa.html", id=id, ist_id=ist_id, name=name)
-

@@ -1,9 +1,6 @@
 var pathname = window.location.pathname;
 var video_id = pathname.split("/")[2]
-var user_id = pathname.split("/")[3]
-
-console.log(user_id)
-console.log(pathname)
+var user = pathname.split("/")[3]
 
 function updateQuestiontable() {
   $.ajax({
@@ -47,9 +44,9 @@ function updateAnswertable(question_num) {
 
       $('#answerTable > tbody:last-child').empty()
       data["answer"].forEach(a => {
-        console.log(a["Answer"] + " " + a["question_id"] + " " + a["a_user"] + " " + a["a_text"])
+        console.log(a["Answer"] + " " + a["question_id"] + " " + a["user"] + " " + a["a_text"])
         $('#answerTable > tbody:last-child').
-          append('<tr> <td>' + a["Answer"] + '</td><td>' + a["question_id"] + '</td><td>' + a["a_user"] + '</td><td>' + a["a_text"] + '</td></tr>');
+          append('<tr> <td>' + a["Answer"] + '</td><td>' + a["question_id"] + '</td><td>' + a["user"] + '</td><td>' + a["a_text"] + '</td></tr>');
       });
     },
     error: function (xhr, textStatus, errorThrown) {
@@ -58,7 +55,7 @@ function updateAnswertable(question_num) {
   });
 }
 function addNewQuestion(curr_time, text) {
-  let requestData = { "curr_time": curr_time, "user": user_id, "text": text }
+  let requestData = { "curr_time": curr_time, "user": user, "text": text }
   $.ajax({
     url: '/API/proxy_question/' + video_id + '/',
     type: "POST",
@@ -80,7 +77,7 @@ function addNewQuestion(curr_time, text) {
 }
 function addNewAnswer(a_text) {
 
-  let requestData = { "a_user": user_id, "a_text": a_text }
+  let requestData = { "user": user, "a_text": a_text }
   $.ajax({
     url: '/API/proxy_answer/' + question_num + '/',
     type: "POST",
@@ -152,10 +149,13 @@ $(document).ready(function () {
         vPlayer.src({ "type": "video/youtube", "src": url });
         vPlayer.play()
 
+        let requestData = {'user': user, "video_id": video_id}
         $.ajax({
           url: '/API/proxy_videos/' + video_id + '/views',
           type: "PUT",
           dataType: "json",
+          contentType: 'application/json',
+          data: JSON.stringify(requestData),
           success: function (data) {
             if (data === "failure") {
               handleError(xhr, status, ''); // manually trigger callback

@@ -1,3 +1,7 @@
+const urlParams = new URLSearchParams(window.location.search);
+const ist_id = urlParams.get('ist_id')
+const name = urlParams.get('name')
+
 
 function getVideoViews(videoID) {
     $.ajax({
@@ -16,9 +20,6 @@ function getVideoViews(videoID) {
     })
 }
 function updateVideostable() {
-    const urlParams = new URLSearchParams(window.location.search);
-    var ist_id = urlParams.get('ist_id')
-    var name = urlParams.get('name')
     if(ist_id == null){
         ist_id = "anonymous"
     }
@@ -49,7 +50,7 @@ function updateVideostable() {
 
 }
 function addNewVideo(url, description) {
-    let requestData = { "description": description, 'url': url }
+    let requestData = {"description": description, 'url': url , 'user': ist_id}
     $.ajax({
         url: '/API/proxy_videos/',
         type: "POST",
