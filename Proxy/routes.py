@@ -155,7 +155,7 @@ def logout():
 @app.route("/login")
 def login():
     if check_port("5004") == 1:
-        return redirect("http://127.0.0.1:5004/login")
+        return redirect("http://127.0.0.1:5004/")
     else:
         flash("User Manager service is down")
         return redirect(url_for("index"))
@@ -167,7 +167,6 @@ def login():
 @app.route("/API/<microservice>/", methods=['GET', 'POST', 'PUT'])
 def get_microservice(microservice, path=None):
     if microservice == "services":
-        print("Im here")
         return {"services": listServicesDICT()}
     print(microservice)
     request_data = request.get_json()
@@ -176,8 +175,6 @@ def get_microservice(microservice, path=None):
         MicroServices.name == microservice).first()
 
     url = service_info.endpoint
-    print(url)
-
     if service_info is not None:
         if path is not None:
             url = url + path
