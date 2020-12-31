@@ -220,4 +220,4 @@ def add_microservice():
 
         return redirect(url_for("index", name=name, ist_id=ist_id))
 
-    return render_template("services.html", form=form, title="New Microservice")
+    return render_template("services.html", form=form, title="New Microservice", ist_id=ist_id, name=name)
