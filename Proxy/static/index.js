@@ -20,10 +20,6 @@ function getVideoViews(videoID) {
     })
 }
 function updateVideostable() {
-    if(ist_id == null){
-        ist_id = "anonymous"
-    }
-
     $.ajax({
         url: '/API/proxy_videos/',
         type: "GET",

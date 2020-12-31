@@ -11,12 +11,9 @@ import json
 #----------------------------------logs--------------------------------------#
 
 # logs handler
-
-
 @app.before_request
 def before_req():
     if(request.method == 'GET'):
-
         IP = request.host
         endpoint = request.path
 
@@ -217,7 +214,6 @@ def load_single_video(id):
 def add_view(id):
     # make REST request to video micro service
     request_data = request.get_json()
-    print(request_data)
     try:
         response = requests.put(
             url="http://127.0.0.1:5002/API/videos/" + str(id) + "/views", json=request_data)
