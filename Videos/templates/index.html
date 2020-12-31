@@ -98,7 +98,7 @@
                     vPlayer.play()
 
                     $.ajax({
-                      url: '/API/videos/'+videoID+'/views',
+                      url: '/API/videos/'+videoID+'/views/',
                       type: "PUT",
                       dataType: "json",
                       success: function (data) {

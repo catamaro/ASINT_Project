@@ -1,3 +1,5 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
 <!DOCTYPE html>
 <html>
 
@@ -12,7 +14,7 @@
     <script src="http://vjs.zencdn.net/7.8.4/video.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
 
-    <script src="./static/logs.js"></script>
+    <script src="/static/services.js"></script>
     <link rel="icon" type="image/png" href="static/video.ico" />
 
     <title>Videos</title>
@@ -20,38 +22,24 @@
 </head>
 
 <body style="margin:5%;">
-    <h2>List of logs</h2>
-    <h3>Events</h3>
-    <table id="eventsTable" class="ui celled table selectable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>IP</th>
-                <th>Endpoint</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <br>
-    <h3>Data Creation</h3>
-    <table id="dataCreationTable" class="ui celled table selectable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Data type</th>
-                <th>Content</th>
-                <th>Timestamp</th>
-                <th>User</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="ui form">
+        <h1>{{ title }}</h1>
 
-    <div style="margin-bottom: 10%;">
-        <br>
-        <a href="{{ url_for('index', ist_id=ist_id, name=name) }}" class="ui button">Go back</a>
+        {{ wtf.quick_form(form) }}
+        </div>
     </div>
+
+    <h2>Active Microservices</h2>
+    <table id="servicesTable" class="ui celled table selectable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Endpoint</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </body>
+

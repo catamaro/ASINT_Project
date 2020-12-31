@@ -4,7 +4,7 @@ var user = pathname.split("/")[3]
 
 function updateQuestiontable() {
   $.ajax({
-    url: '/API/proxy_question/',
+    url: '/API/qa/question/',
     type: "GET",
     dataType: "json",
     success: function (data) {
@@ -34,7 +34,7 @@ function showanswers(ctl) {
 }
 function updateAnswertable(question_num) {
   $.ajax({
-    url: '/API/proxy_answer/' + question_num + '/',
+    url: '/API/qa/answer/' + question_num + '/',
     type: "GET",
     dataType: "json",
     success: function (data) {
@@ -57,7 +57,7 @@ function updateAnswertable(question_num) {
 function addNewQuestion(curr_time, text) {
   let requestData = { "curr_time": curr_time, "user": user, "text": text }
   $.ajax({
-    url: '/API/proxy_question/' + video_id + '/',
+    url: '/API/qa/question/' + video_id + '/',
     type: "POST",
     dataType: "json",
     contentType: 'application/json',
@@ -79,7 +79,7 @@ function addNewAnswer(a_text) {
 
   let requestData = { "user": user, "a_text": a_text }
   $.ajax({
-    url: '/API/proxy_answer/' + question_num + '/',
+    url: '/API/qa/answer/' + question_num + '/',
     type: "POST",
     dataType: "json",
     contentType: 'application/json',
@@ -137,7 +137,7 @@ $(document).ready(function () {
   function loadVideo() {
 
     $.ajax({
-      url: '/API/proxy_videos/' + video_id + '/',
+      url: '/API/videos/' + video_id + '/',
       type: "GET",
       dataType: "json",
       success: function (data) {
@@ -151,7 +151,7 @@ $(document).ready(function () {
 
         let requestData = {'user': user, "video_id": video_id}
         $.ajax({
-          url: '/API/proxy_videos/' + video_id + '/views',
+          url: '/API/videos/' + video_id + '/views/',
           type: "PUT",
           dataType: "json",
           contentType: 'application/json',

@@ -1,5 +1,6 @@
 from Proxy import app
 from os import system
+from Proxy.models import MicroServices
 
 
 def check_port(port):
@@ -13,3 +14,17 @@ def check_port(port):
         portstatus = 1
 
     return portstatus
+
+def listServices():
+    sv = app.session.query(MicroServices).all()
+    app.session.close()
+    return sv
+
+
+def listServicesDICT():
+    ret_list = []
+    ls = listServices()
+    for s in ls:
+        sv = s.to_dictionary()
+        ret_list.append(sv)
+    return ret_list

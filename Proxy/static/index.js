@@ -5,7 +5,7 @@ const name = urlParams.get('name')
 
 function getVideoViews(videoID) {
     $.ajax({
-        url: '/API/proxy_videos/' + videoID + '/',
+        url: '/API/videos/' + videoID + '/',
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -21,7 +21,7 @@ function getVideoViews(videoID) {
 }
 function updateVideostable() {
     $.ajax({
-        url: '/API/proxy_videos/',
+        url: '/API/videos/',
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -48,7 +48,7 @@ function updateVideostable() {
 function addNewVideo(url, description) {
     let requestData = {"description": description, 'url': url , 'user': ist_id}
     $.ajax({
-        url: '/API/proxy_videos/',
+        url: '/API/videos/',
         type: "POST",
         dataType: "json",
         contentType: 'application/json',

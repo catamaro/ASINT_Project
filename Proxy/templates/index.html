@@ -50,6 +50,7 @@
   {% if admin %}
   <a href="{{ url_for('logs', ist_id=ist_id, name=name) }}" class="ui button">App Logs</a>
   <a href="{{ url_for('stats', ist_id=ist_id, name=name) }}" class="ui button">Users Statistics</a>
+  <a href="{{ url_for('add_microservice', ist_id=ist_id, name=name) }}" class="ui button">Add Microservice</a>
   {% endif %}
 
 

@@ -15,7 +15,7 @@ models.Base.metadata.create_all(bind=engine)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
 
-@app.route("/API/logs", methods=['GET'])
+@app.route("/API/logs/", methods=['GET'])
 def returnLogsJSON():
     lists = listLogsDICT()
     return {"events": lists[0], "data_creation": lists[1]}
