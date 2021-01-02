@@ -15,9 +15,9 @@ models.Base.metadata.create_all(bind=engine)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
 
-@app.route("/API/stats", methods=['GET'])
+@app.route("/API/stats/", methods=['GET'])
 def returnStatsJSON():
-    return {"events": listStatsDICT()}
+    return {"stats": listStatsDICT()}
 
 @app.route('/API/stats', methods = ["POST"])
 def create_stats():
@@ -32,22 +32,7 @@ def create_stats():
     if ret:
         return {"id": ret}
     else:
-        abort(409)
-
-@app.route('/API/stats/update', methods = ["POST"])
-def update_stats():
-    j = request.get_json()
-    j = json.loads(j)
-    ret = False
-    try:    
-        ret = updateUser_Stats(j["user"], j["data_type"])
-    except:
-        abort(400)
-        #the arguments were incorrect
-    if ret:
-        return {"id": ret}
-    else:
-        abort(409)
+        return "id is already in uses"
 
 @app.route("/API/stats/update/<user>/<data_type>", methods=['PUT', 'PATCH'])
 def newStats(user, data_type):

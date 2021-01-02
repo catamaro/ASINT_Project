@@ -15,19 +15,21 @@ app.session.expire_on_commit = False
 
 @app.route('/')
 def login():
-    if fenix_blueprint.session.authorized:
     
-        resp = fenix_blueprint.session.get("/api/fenix/v1/person/")
-
-        data = resp.json()
+    if fenix_blueprint.session.authorized:
         try:
-            newUser(data['username'], data['name'])
+            resp = fenix_blueprint.session.get("/api/fenix/v1/person/")
+
+            data = resp.json()
+            try:
+                print(data)
+                newUser(data['username'], data['name'])
+            except:
+                abort(400)
+                # the arguments were incorrect
         except:
-            abort(400)
-            # the arguments were incorrect
-
+            return redirect(url_for('fenix-example.login'))
         return redirect("http://127.0.0.1:5005/redirect_login?id="+data['username']+'&name='+data['name'])
-
     return redirect(url_for('fenix-example.login'))
 
 

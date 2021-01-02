@@ -4,7 +4,7 @@ var user = pathname.split("/")[3]
 
 function updateQuestiontable() {
   $.ajax({
-    url: '/API/qa/question/',
+    url: '/API/qa/question/' + video_id +"/",
     type: "GET",
     dataType: "json",
     success: function (data) {

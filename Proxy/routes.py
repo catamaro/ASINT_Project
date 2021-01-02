@@ -77,6 +77,8 @@ def before_req():
         try:
             requests.post(
                 "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
+            requests.put(
+                "http://127.0.0.1:5006/API/stats/update/"+user+"/"+data_type)
         except:
             flash("Logs service is down")
 

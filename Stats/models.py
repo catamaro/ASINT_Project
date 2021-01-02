@@ -17,4 +17,4 @@ class User_Stats(Base):
         return "<Stats (id=%d user=%s n_videos=%d, n_views=%d, n_question=%d, n_answers=%d>" % (
                                 self.id, self.user, self.n_videos, self.n_views, self.n_question,  self.n_answers)
     def to_dictionary(self):
-        return {"id": self.id, "user": self.user, "type": self.n_videos, "n_views": self.n_views, "n_question": self.n_question, "n_answers": self.n_answers}
+        return {"id": self.id, "user": self.user, "n_videos": self.n_videos, "n_views": self.n_views, "n_question": self.n_question, "n_answers": self.n_answers}

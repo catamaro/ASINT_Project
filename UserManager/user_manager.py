@@ -12,7 +12,7 @@ def newUser(ist_id, name):
     try:
         app.session.add(uid)
         app.session.commit()
-        u_id = uid.u_id
+        u_id = uid.id
         app.session.close()
         return u_id
     except Exception as e:
