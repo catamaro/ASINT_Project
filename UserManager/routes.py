@@ -48,10 +48,11 @@ def logout():
     return {"auth": False}
 
 
-@app.route('/API/user/<ist_id>', methods=['GET'])
-def getUser(ist_id):
+@app.route('/API/user/<ist_id>/<name>/', methods=['GET'])
+def getUser(ist_id, name):
+    print("im here?")
     try:
-        v = getUserDICT(ist_id)
+        v = getUserDICT(ist_id, name)
         return v
     except:
         abort(404)

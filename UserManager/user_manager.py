@@ -19,13 +19,16 @@ def newUser(ist_id, name):
         print(e)
         return None
 
-def getUser(ist_id):
+def getUser(ist_id, name):
+    print(name)
+    name.replace("%20", " ")
+    print(name)
     try:
-        v = app.session.query(User).filter(User.ist_id == ist_id).first()
+        v = app.session.query(User).filter_by(ist_id=ist_id, name=name).first()
     except:
         abort(500)
     app.session.close()
     return v
 
-def getUserDICT(ist_id):
-    return getUser(ist_id).to_dictionary()
+def getUserDICT(ist_id, name):
+    return getUser(ist_id, name).to_dictionary()

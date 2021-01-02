@@ -1,7 +1,7 @@
 from flask import Flask,  _app_ctx_stack
 from flask import abort, render_template, redirect, session, url_for, request, flash
 from Proxy import app, models
-from Proxy.proxy import check_port, listServicesDICT
+from Proxy.proxy import check_port, listServicesDICT, verify_user
 from Proxy.models import MicroServices
 from Proxy.forms import ServiceForm
 from Proxy.database import SessionLocal, engine
@@ -84,38 +84,35 @@ def before_req():
 
 #----------------------------------proxy--------------------------------------#
 
+""" @app.route("/<pages>/<path:path>")
+def pages(pages, path=None):
+    name = request.args.get("name", None)
+    ist_id = request.args.get("ist_id", None)
+
+    html_url = pages + ".html"
+
+    page, admin, ist_id, name, auth = verify_user(name, ist_id, html_url)
+
+    return render_template(page, name=name, ist_id=ist_id,
+                           auth=auth, admin=admin) """
+
 @app.route("/")
 def index():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
 
-    if ist_id is not None:
-        auth = True
-    else:
-        auth = None
+    page, admin, ist_id, name, auth = verify_user(name, ist_id, "videos.html")
 
-    admin = None
-
-    if ist_id is not None:
-        try:
-            response = requests.get("http://127.0.0.1:5004/API/user/"+ist_id)
-            if response.status_code != 200:
-                abort(500)
-
-            if response.json().get("admin") == 1:
-                admin = True
-        except:
-            flash("Error retrieving data")
-
-    return render_template("index.html", name=name, ist_id=ist_id,
+    return render_template(page, name=name, ist_id=ist_id,
                            auth=auth, admin=admin)
-
-
+    
 # admin page
 @app.route("/logs")
 def logs():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
+
+    page = verify_user(name, ist_id, "logs.html")
 
     return render_template("logs.html", ist_id=ist_id, name=name)
 
@@ -126,12 +123,16 @@ def stats():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
 
+    page = verify_user(name, ist_id, "statistics.html")
+
     return render_template("statistics.html", ist_id=ist_id, name=name)
 
 
 @app.route("/QA/<int:id>/<ist_id>/<name>")
 def qa_endpoint(id, ist_id, name):
-    return render_template("qa.html", id=id, ist_id=ist_id, name=name)
+    page = verify_user(name, ist_id, "qa.html")
+
+    return render_template(page, name=name, ist_id=ist_id, id=id)
 
 #----------------------------------user--------------------------------------#
 
@@ -142,9 +143,6 @@ def get_id():
     request_data = {"user": ist_id}
 
     try:
-        response = requests.get("http://127.0.0.1:5004/API/user/"+ist_id)
-        if response.status_code != 200:
-            abort(500)
         resp_stats = requests.post("http://127.0.0.1:5006/API/stats",
                                      json=json.dumps(request_data))   
         if resp_stats.status_code != 200:

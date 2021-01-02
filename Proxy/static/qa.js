@@ -1,6 +1,7 @@
 var pathname = window.location.pathname;
 var video_id = pathname.split("/")[2]
 var user = pathname.split("/")[3]
+var q_infor = {}
 
 function updateQuestiontable() {
   $.ajax({
@@ -8,14 +9,16 @@ function updateQuestiontable() {
     type: "GET",
     dataType: "json",
     success: function (data) {
+      i = 0
       if (data === "failure") {
         handleError(xhr, status, ''); // manually trigger callback
       }
-
+      q_infor = data["question"]
       $('#questionTable > tbody:last-child').empty()
       data["question"].forEach(q => {
         $('#questionTable > tbody:last-child').
-          append('<tr> <td>' + q["Question"] + '</td><td>' + q["curr_time"] + '</td><td>' + q["user"] + '</td><td>' + q["text"] + '</td><td>' + "<button type='button' onclick='showanswers(this);' class='btn btn-default'>" + "Show answers" + "</button>" + '</td></tr>');
+          append('<tr> <td>' + i + '</td><td>' + q["curr_time"] + '</td><td>' + q["text"] + '</td><td>' + "<button type='button' onclick='showanswers(this);' class='btn btn-default'>" + "Show answers" + "</button>" + '</td></tr>');
+          i++
       });
     },
     error: function (xhr, textStatus, errorThrown) {
@@ -28,8 +31,10 @@ function showanswers(ctl) {
   var _row = $(ctl).parents("tr");
   var cols = _row.children("td");
   question_num = _row.children("td")[0].innerHTML
-
-  updateAnswertable(question_num)
+  $('#question_info').empty()
+  $('#question_info').append('<br><h3>Question: </h3>' + q_infor[question_num]["Question"] +" - "+q_infor[question_num]["text"] + '<h3>Time: </h3>'+ q_infor[question_num]["curr_time"]
+        + "<h3>User: </h3>" + q_infor[question_num]["user"] + "</h3>");
+  updateAnswertable(q_infor[question_num]["Question"])
   answershow()
 }
 function updateAnswertable(question_num) {
@@ -124,7 +129,7 @@ $(document).ready(function () {
     newText = $("#newText").val()
     addNewQuestion(newCurrTime, newText)
     addquestionhide()
-    vPlayer.currentTime(parseFloat($("#resumetime").val()))
+    vPlayer.currentTime(parseFloat(pauseTime))
     vPlayer.play()
   })
   $("#buttonAddAnswer").click(function () {

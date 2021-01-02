@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.css">
+  <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.js">  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-xmlrpc/0.4.3/jquery.xmlrpc.js"> </script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
+  <script src="http://vjs.zencdn.net/7.8.4/video.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
+
+  <script src="./static/videos.js"></script>
+  <link rel="icon" type="image/png" href="static/video.ico"/>
+
+  <title>Videos</title>
+
+</head>
+
+<body style="margin:5%;">
+  {% if name %}
+  {% if ist_id %}
+  <h2>Welcome! {{name}} {{ist_id}}</h2>
+  {% endif %}
+  {% else %}
+  <h3>Welcome!</h3>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+
+      {% if messages[0] == 'Logs service is down' %}
+      <script>alert("Logs Service is down")</script>
+      {% endif %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
+  <a href="{{ url_for('logout', ist_id=ist_id, name=name) }}" class="ui button">Logout</a>
+  {% if admin %}
+  <a href="{{ url_for('logs', ist_id=ist_id, name=name) }}" class="ui button">App Logs</a>
+  <a href="{{ url_for('stats', ist_id=ist_id, name=name) }}" class="ui button">Users Statistics</a>
+  <a href="{{ url_for('add_microservice', ist_id=ist_id, name=name) }}" class="ui button">Add Microservice</a>
+  {% endif %}
+
+
+  <br></br>
+
+  <h3>List of videos</h3>
+  <table class="ui celled table selectable" id="videosTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>IST number</th>
+        <th>Description</th>
+        <th>Views</th>
+        <th>Q & A </th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <button class="ui button" id="buttonUpdateVideotable">Update List</button>
+
+  <h3>Add a new Video</h3>
+
+  <form id="formAddVideo">
+    <div class="ui input">
+      <input type="url" placeholder="Video URL" id="newVideoURL" required>
+    </div>
+
+    <div class="ui input">
+      <input type="text" placeholder="Video Description" id="newVideoDescription" required>
+    </div>
+    <button type="submit" class="ui button" id="buttonAddVideo">Add new Video</button>
+  </form>
+
+</body>
+
+</html>

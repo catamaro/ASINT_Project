@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const ist_id = urlParams.get('ist_id')
-const name = urlParams.get('name')
+const uname = urlParams.get('name')
 
 
 function getVideoViews(videoID) {
@@ -32,7 +32,7 @@ function updateVideostable() {
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
                 $('#videosTable > tbody:last-child').
-                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='/QA/" + v["video_id"] + "/" + ist_id + "/" + name + "'>" + "Select" + "</a>" + '</td></tr>');
+                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["ist_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='/QA/" + v["video_id"] + "/" + ist_id + "/" + uname + "'>" + "Select" + "</a>" + '</td></tr>');
                 getVideoViews(v["video_id"])
             });
 
@@ -46,7 +46,7 @@ function updateVideostable() {
 
 }
 function addNewVideo(url, description) {
-    let requestData = {"description": description, 'url': url , 'user': ist_id}
+    let requestData = {"description": description, 'url': url , 'user': ist_id, 'name': uname}
     $.ajax({
         url: '/API/videos/',
         type: "POST",

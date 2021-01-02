@@ -41,13 +41,13 @@ def newVideoView(id):
     return n
 
 
-def newVideo(description, url):
+def newVideo(description, url, ist_id, name):
     video = app.session.query(YTVideo).filter_by(url=url).first()
     if video is not None:
         print('Video already in database.')
         return None
     
-    vid = YTVideo(description=description, url=url)
+    vid = YTVideo(description=description, url=url, ist_id=ist_id, name=name)
     try:
         app.session.add(vid)
         app.session.commit()

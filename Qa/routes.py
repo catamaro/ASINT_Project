@@ -13,10 +13,6 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 def index():
    return render_template("index.html")
 
-@app.route("/API/qa/question/", methods=['GET'])
-def returnsQuestionJSON():
-    return {"qa": listQuestionDICT()}
-
 @app.route("/API/qa/question/<int:id>/", methods=['GET'])
 def returnSingleQuestionJSON(id):
     try:

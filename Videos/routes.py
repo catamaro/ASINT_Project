@@ -23,7 +23,7 @@ def createNewVideo():
     j = request.get_json()
     ret = False
     try:
-        ret = newVideo(j["description"], j['url'])
+        ret = newVideo(j["description"], j['url'], j['user'], j['name'])
     except:
         abort(400)
         #the arguments were incorrect
