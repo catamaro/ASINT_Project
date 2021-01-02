@@ -30,12 +30,15 @@
 
   {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <ul class="flashes">
 
-      {% if messages[0] == 'Logs service is down' %}
-      <script>alert("Logs Service is down")</script>
-      {% endif %}
-    </ul>
+    {% for message in messages if not message=='Logs service is down' %}
+      <script>alert("{{ message }}")</script>
+    {% endfor %}
+
+    {% if messages[0] == 'Logs service is down' %}
+    <script>alert("Logs Service is down")</script>
+    {% endif %}
+
   {% endif %}
   {% endwith %}
 

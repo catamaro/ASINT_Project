@@ -1,12 +1,12 @@
 from flask import Flask,  _app_ctx_stack
-from flask import abort, render_template, redirect, session, url_for, request, flash
+from flask import abort, render_template, redirect, session, url_for, request, flash, jsonify
 from Proxy import app, models
 from Proxy.proxy import check_port, listServicesDICT, verify_user
 from Proxy.models import MicroServices
 from Proxy.forms import ServiceForm
 from Proxy.database import SessionLocal, engine
 
-import requests 
+import requests
 import json
 
 from sqlalchemy.orm import scoped_session
@@ -19,6 +19,8 @@ app.session = scoped_session(
 #----------------------------------logs and stats-------------------------------------#
 
 # logs handler
+
+
 @app.before_request
 def before_req():
     if(request.method == 'GET'):
@@ -85,6 +87,7 @@ def before_req():
 
 #------------------------------------proxy URI----------------------------------------#
 
+
 @app.route("/<path:page>")
 @app.route("/")
 def pages(page="index"):
@@ -101,6 +104,7 @@ def pages(page="index"):
 
 #------------------------------------login URI----------------------------------------#
 
+
 @app.route("/redirect_login")
 def get_id():
     name = request.args.get("name", None)
@@ -110,13 +114,14 @@ def get_id():
 
     try:
         resp_stats = requests.post("http://127.0.0.1:5006/API/stats",
-                                     json=json.dumps(request_data))   
+                                   json=json.dumps(request_data))
         if resp_stats.status_code != 200:
             abort(500)
     except:
         flash("Error retrieving id")
 
-    return redirect("/videos?ist_id=" + ist_id + "&name="+ name)
+    return redirect("/videos?ist_id=" + ist_id + "&name=" + name)
+
 
 @app.route("/logout")
 def logout():
@@ -132,6 +137,7 @@ def logout():
 
     return redirect("/index")
 
+
 @app.route("/login")
 def login():
     # see if app is running in the redirect port in a normal app we could use ping
@@ -142,6 +148,7 @@ def login():
         return redirect("/index")
 
 #----------------------------------microservices--------------------------------------#
+
 
 @app.route("/API/<microservice>/<path:path>", methods=['GET', 'POST', 'PUT'])
 @app.route("/API/<microservice>/", methods=['GET', 'POST', 'PUT'])
@@ -164,15 +171,16 @@ def get_microservice(microservice, path=None):
                 response = requests.post(url=url, json=request_data)
             elif request.method == 'PUT':
                 response = requests.put(url=url, json=request_data)
-        except:
-            return "failure"
 
-        if response.status_code != 200:
-            abort(500)
+            if response.status_code != 200:
+                abort(response.status_code)
+        except:
+            return jsonify("failure"), 500
     else:
-        return "failure"
+        return jsonify("failure"), 404
 
     return response.json()
+
 
 @app.route("/microservice", methods=['POST', 'GET'])
 def add_microservice():
@@ -186,7 +194,7 @@ def add_microservice():
 
         service_info = app.session.query(MicroServices).filter(
             MicroServices.name == form.name.data).first()
-        
+
         endpoint = "http://127.0.0.1:" + form.port.data + "/API/" + form.name.data + "/"
 
         if service_info is None:
@@ -196,6 +204,6 @@ def add_microservice():
             app.session.commit()
             app.session.close()
 
-        return redirect("/videos?ist_id=" + ist_id + "&name="+ name)
+        return redirect("/videos?ist_id=" + ist_id + "&name=" + name)
 
     return render_template(url, form=form, title="New Microservice", ist_id=ist_id, name=name)

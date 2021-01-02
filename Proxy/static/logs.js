@@ -24,7 +24,7 @@ function updateLogstable() {
             });
         },
         error: function (xhr, textStatus, errorThrown) {
-            alert('Admin service is down');
+            alert('Logs service is down');
         }
     });
 

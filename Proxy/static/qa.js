@@ -107,7 +107,7 @@ $(document).ready(function () {
   addquestionhide()
   loadVideo()
 
-  $("#buttonUpdateQuestiontable").click(
+  $("#buttonUpdateQuestionTable").click(
     function () {
       console.log('stop clicking me!')
       updateQuestiontable()
