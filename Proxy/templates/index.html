@@ -13,10 +13,48 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
 
   <script src="./static/index.js"></script>
+  <link rel="icon" type="image/png" href="static/video.ico"/>
+
+  <title>Videos</title>
 
 </head>
 
-<body>
+<body style="margin:5%;">
+  {% if name %}
+  {% if ist_id %}
+  <h2>Welcome! {{name}} {{ist_id}}</h2>
+  {% endif %}
+  {% else %}
+  <h3>Welcome!</h3>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages if message != 'Logs service is down' %}
+      <script>alert("{{ message }}")</script>
+      {% endfor %}
+      {% if messages[0] == 'Logs service is down' %}
+      <script>alert("Logs Service is down")</script>
+      {% endif %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
+  {% if auth %}
+  <a href="{{ url_for('logout', ist_id=ist_id, name=name) }}" class="ui button">Logout</a>
+  {% else %}
+  <a href="{{ url_for('login') }}" class="ui button">Login</a>
+  {% endif %}
+
+  {% if admin %}
+  <a href="{{ url_for('logs', ist_id=ist_id, name=name) }}" class="ui button">App Logs</a>
+  <a href="{{ url_for('stats', ist_id=ist_id, name=name) }}" class="ui button">Users Statistics</a>
+  {% endif %}
+
+
+  <br></br>
+
   <h3>List of videos</h3>
   <table class="ui celled table selectable" id="videosTable">
     <thead>

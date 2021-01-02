@@ -34,8 +34,6 @@ def createNewVideo():
     j = request.get_json()
     ret = False
     try:
-        print(j)
-        print(j["description"])
         ret = newVideo(j["description"], j['url'])
     except:
         abort(400)
@@ -46,7 +44,7 @@ def createNewVideo():
         abort(409)
     #if there is an erro return ERROR 409
 
-@app.route("/API/videos/<int:id>/")
+@app.route("/API/videos/<int:id>/", methods=['GET'])
 def returnSingleVideoJSON(id):
     try:
         v = getVideoDICT(id)

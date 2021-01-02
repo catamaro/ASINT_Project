@@ -1,12 +1,12 @@
-from Logs import app
+from Stats import app
 from flask import Flask
 from flask import abort, render_template, redirect, request, session, url_for
-from Logs.logs import *
+from Stats.stats import *
 
 from sqlalchemy.orm import scoped_session
 from flask import Flask, _app_ctx_stack
-from Logs import models
-from Logs.database import SessionLocal, engine
+from Stats import models
+from Stats.database import SessionLocal, engine
 
 import json
 
@@ -15,18 +15,17 @@ models.Base.metadata.create_all(bind=engine)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
 
-@app.route("/API/logs", methods=['GET'])
-def returnLogsJSON():
-    lists = listLogsDICT()
-    return {"events": lists[0], "data_creation": lists[1]}
+@app.route("/API/stats", methods=['GET'])
+def returnStatsJSON():
+    return {"events": listStatsDICT()}
 
-@app.route('/API/logs/event', methods = ["POST"])
-def create_log_event():
+@app.route('/API/stats', methods = ["POST"])
+def create_stats():
     j = request.get_json()
     j = json.loads(j)
     ret = False
-    try:
-        ret = newEvent(j["IP"], j['endpoint'])
+    try:    
+        ret = newUser_Stats(j["user"])
     except:
         abort(400)
         #the arguments were incorrect
@@ -35,13 +34,13 @@ def create_log_event():
     else:
         abort(409)
 
-@app.route('/API/logs/data_creation', methods = ["POST"])
-def create_log_data_creation():
+@app.route('/API/stats/update', methods = ["POST"])
+def update_stats():
     j = request.get_json()
     j = json.loads(j)
     ret = False
-    try:
-        ret = newDataCreation(j["data_type"], j["content"], j["user"])
+    try:    
+        ret = updateUser_Stats(j["user"], j["data_type"])
     except:
         abort(400)
         #the arguments were incorrect
@@ -49,3 +48,10 @@ def create_log_data_creation():
         return {"id": ret}
     else:
         abort(409)
+
+@app.route("/API/stats/update/<user>/<data_type>", methods=['PUT', 'PATCH'])
+def newStats(user, data_type):
+    try:
+        return {"stats": updateUser_Stats(user,data_type)}
+    except:
+        abort(404)

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.js">  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-xmlrpc/0.4.3/jquery.xmlrpc.js"> </script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
+    <script src="http://vjs.zencdn.net/7.8.4/video.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-youtube/2.6.1/Youtube.min.js"></script>
+
+    <script src="./static/logs.js"></script>
+    <link rel="icon" type="image/png" href="static/video.ico" />
+
+    <title>Videos</title>
+
+</head>
+
+<body style="margin:5%;">
+    <h2>List of logs</h2>
+    <h3>Events</h3>
+    <table id="eventsTable" class="ui celled table selectable" id="videosTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>IP</th>
+                <th>Endpoint</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <br>
+    <h3>Data Creation</h3>
+    <table id="dataCreationTable" class="ui celled table selectable" id="videosTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data type</th>
+                <th>Content</th>
+                <th>Timestamp</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div style="margin-bottom: 10%;">
+        <br>
+        <a href="{{ url_for('index', ist_id=ist_id, name=name) }}" class="ui button">Go back</a>
+    </div>
+</body>

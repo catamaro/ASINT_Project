@@ -28,9 +28,9 @@ def listAnswerDICT():
     return ret_list
 
 def getAnswer(id):
-     a =  app.session.query(Answer).filter(Answer.question_id==id).all()
-     app.session.close()
-     return a
+    a =  app.session.query(Answer).filter(Answer.question_id==id).all()
+    app.session.close()
+    return a
 
 def getAnswerDICT(id):
     ret_list = []
@@ -41,12 +41,17 @@ def getAnswerDICT(id):
     return ret_list
 
 def getQuestion(id):
-     q =  app.session.query(Question).filter(Question.video_id==id).first()
-     app.session.close()
-     return q
+    q =  app.session.query(Question).filter(Question.video_id==id).all()
+    app.session.close()
+    return q
 
 def getQuestionDICT(id):
-    return getQuestion(id).to_dictionary()
+    ret_list = []
+    lq = getQuestion(id)
+    for q in lq:
+        quest = q.to_dictionary()
+        ret_list.append(quest)
+    return ret_list
 
 def newQuestion(video_id, curr_time, user, text):
     quest =  Question(video_id = video_id, curr_time = curr_time, user = user, text = text)
@@ -60,7 +65,7 @@ def newQuestion(video_id, curr_time, user, text):
         return None
 
 def newAnswer(question_id, a_user, a_text):
-    answ =  Answer(question_id = question_id, a_user = a_user, a_text = a_text)
+    answ = Answer(question_id = question_id, a_user = a_user, a_text = a_text)
     try:
         app.session.add(answ)
         app.session.commit()

@@ -13,16 +13,11 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 def index():
    return render_template("index.html")
 
-@app.route("/API/question/", methods=['GET'])
-def returnsQuestionJSON():
-    return {"qa": listQuestionDICT()}
-
-
 @app.route("/API/question/<int:id>/", methods=['GET'])
-def returnSingleQuestionJSON(id):
+def returnSingleVideoQuestionsJSON(id):
     try:
-        v = getQuestionDICT(id)
-        return v
+        q = {"question": getQuestionDICT(id)}
+        return q
     except:
         abort(404)
 
@@ -44,7 +39,6 @@ def createNewQuestion(id):
     ret = False
     try:
         ret = newQuestion(id, j['curr_time'], j['user'], j['text'])
-        print(ret)
     except:
         abort(400)
         #the arguments were incorrect
@@ -59,9 +53,7 @@ def createNewAnswer(id):
     j = request.get_json()
     ret = False
     try:
-        print(j["a_text"])
-        ret = newAnswer(id, j['a_user'], j['a_text'])
-        print(ret)
+        ret = newAnswer(id, j['user'], j['a_text'])
     except:
         abort(400)
         #the arguments were incorrect
