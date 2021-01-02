@@ -44,7 +44,7 @@
         }
         function updateAnswertable(question_num){
             $.ajax({
-                url: '/API/answer/'+question_num+'/',
+                url: '/API/qa/answer/'+question_num+'/',
                 type: "GET",
                 dataType: "json",
                 success: function (data) {
@@ -82,7 +82,7 @@
             // look at the server to understand what data should be sent.
             let requestData={"question_id" : question_id, "a_user" : a_user, "a_text" : a_text}
             $.ajax({
-                url: '/API/answer/',
+                url: '/API/qa/answer/',
                 type: "POST",
                 dataType: "json",
                 contentType: 'application/json',

@@ -1,12 +1,19 @@
-from flask import Flask
+from flask import Flask,  _app_ctx_stack
 from flask import abort, render_template, redirect, session, url_for, request, flash
-from Proxy import app
-from flask_login import current_user, login_user, login_required, logout_user
-from flask_login import UserMixin
-from Proxy.proxy import check_port
+from Proxy import app, models
+from Proxy.proxy import check_port, listServicesDICT
+from Proxy.models import MicroServices
+from Proxy.forms import ServiceForm
+from Proxy.database import SessionLocal, engine
 
+from sqlalchemy.orm import scoped_session
 import requests
 import json
+
+models.Base.metadata.create_all(bind=engine)
+
+app.session = scoped_session(
+    SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
 #----------------------------------logs--------------------------------------#
 
@@ -22,24 +29,20 @@ def before_req():
             # make REST request to logs micro service
             request_data = {"IP": IP, "endpoint": endpoint}
             try:
-                resp_logs = requests.post("http://127.0.0.1:5003/API/logs/event",
-                                     json=json.dumps(request_data))                  
+                resp = requests.post("http://127.0.0.1:5003/API/logs/event",
+                                     json=json.dumps(request_data))
             except:
                 flash("Logs service is down")
 
     elif(request.method == 'POST'):
         if request.url.find("video") != -1:
             data_type = "video"
-            print("\n\nvideo\n\n")
         elif request.url.find("question") != -1:
             data_type = "question"
-            print("\n\nquestion\n\n")
         elif request.url.find("answer") != -1:
             data_type = "answer"
-            print("\n\nanswer\n\n")
         else:
-            data_type = "unknown"
-            print("\n\nunknown\n\n")
+            return
 
         user = request.json.get("user")
         content = json.dumps(request.json)
@@ -71,28 +74,13 @@ def before_req():
 
         # make REST request to logs micro service
         data = {"data_type": data_type, "content": content, "user": user}
-        print("\n\nVIEW\n\n")
         try:
             requests.post(
                 "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
         except:
             flash("Logs service is down")
 
-
-@app.route("/API/proxy_logs/", methods=['GET'])
-def load_logs():
-    # make REST request to video micro service
-    try:
-        response = requests.get("http://127.0.0.1:5003/API/logs")
-
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
-    return response.json()
-
 #----------------------------------proxy--------------------------------------#
-
 
 @app.route("/")
 def index():
@@ -120,18 +108,17 @@ def index():
     return render_template("index.html", name=name, ist_id=ist_id,
                            auth=auth, admin=admin)
 
+
 # admin page
-
-
 @app.route("/logs")
 def logs():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
 
     return render_template("logs.html", ist_id=ist_id, name=name)
+
+
 # admin page
-
-
 @app.route("/stats")
 def stats():
     name = request.args.get("name", None)
@@ -139,8 +126,12 @@ def stats():
 
     return render_template("statistics.html", ist_id=ist_id, name=name)
 
-#----------------------------------user--------------------------------------#
 
+@app.route("/QA/<int:id>/<ist_id>/<name>")
+def qa_endpoint(id, ist_id, name):
+    return render_template("qa.html", id=id, ist_id=ist_id, name=name)
+
+#----------------------------------user--------------------------------------#
 
 @app.route("/redirect_login")
 def get_id():
@@ -180,131 +171,69 @@ def logout():
 @app.route("/login")
 def login():
     if check_port("5004") == 1:
-        return redirect("http://127.0.0.1:5004/login")
+        return redirect("http://127.0.0.1:5004/")
     else:
         flash("User Manager service is down")
         return redirect(url_for("index"))
 
 
-#----------------------------------videos--------------------------------------#
+#-------------------------------microservices--------------------------------------#
 
-
-@app.route("/API/proxy_videos/", methods=['GET'])
-def load_videos():
-    # make REST request to video micro service
-    try:
-        response = requests.get("http://127.0.0.1:5002/API/videos/")
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
-
-    return response.json()
-
-
-@app.route("/API/proxy_videos/", methods=['POST'])
-def create_video():
-    # make REST request to video micro service
+@app.route("/API/<microservice>/<path:path>", methods=['GET', 'POST', 'PUT'])
+@app.route("/API/<microservice>/", methods=['GET', 'POST', 'PUT'])
+def get_microservice(microservice, path=None):
+    if microservice == "services":
+        return {"services": listServicesDICT()}
+    print(microservice)
     request_data = request.get_json()
-    try:
-        response = requests.post(
-            "http://127.0.0.1:5002/API/videos/", json=request_data)
+
+    service_info = app.session.query(MicroServices).filter(
+        MicroServices.name == microservice).first()
+
+    url = service_info.endpoint
+    if service_info is not None:
+        if path is not None:
+            url = url + path
+            print(url)
+
+        try:
+            if request.method == 'GET':
+                response = requests.get(url=url)
+            elif request.method == 'POST':
+                response = requests.post(url=url, json=request_data)
+            elif request.method == 'PUT':
+                response = requests.put(url=url, json=request_data)
+        except:
+            return "failure"
+
         if response.status_code != 200:
             abort(500)
-    except:
+    else:
         return "failure"
 
     return response.json()
 
 
-@app.route("/API/proxy_videos/<int:id>/", methods=['GET'])
-def load_single_video(id):
-    # make REST request to video micro service
-    try:
-        response = requests.get(
-            url="http://127.0.0.1:5002/API/videos/" + str(id)+"/")
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
+@app.route("/API/microservice", methods=['POST', 'GET'])
+def add_microservice():
+    name = request.args.get("name", None)
+    ist_id = request.args.get("ist_id", None)
 
-    return response.json()
+    form = ServiceForm()
+    if form.validate_on_submit():
 
+        service_info = app.session.query(MicroServices).filter(
+            MicroServices.name == form.name.data).first()
+        
+        endpoint = "http://127.0.0.1:" + form.port.data + "/API/" + form.name.data + "/"
 
-@app.route("/API/proxy_videos/<int:id>/views", methods=['PUT', 'PATCH'])
-def add_view(id):
-    # make REST request to video micro service
-    request_data = request.get_json()
-    try:
-        response = requests.put(
-            url="http://127.0.0.1:5002/API/videos/" + str(id) + "/views", json=request_data)
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
+        if service_info is None:
+            newService = MicroServices(name=form.name.data, endpoint=endpoint)
 
-    return response.json()
+            app.session.add(newService)
+            app.session.commit()
+            app.session.close()
 
-#----------------------------------qa--------------------------------------#
+        return redirect(url_for("index", name=name, ist_id=ist_id))
 
-
-@app.route("/API/proxy_question/<int:id>/", methods=['POST'])
-def create_question(id):
-    # make REST request to video micro service
-    request_data = request.get_json()
-    try:
-        response = requests.post(
-            "http://127.0.0.1:5001/API/question/"+str(id)+"/", json=request_data)
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
-
-    return response.json()
-
-
-@app.route("/API/proxy_question/<int:id>/", methods=['GET'])
-def load_questions(id):
-    # make REST request to video micro service
-    try:
-        response = requests.get("http://127.0.0.1:5001/API/question/"+str(id)+"/")
-        print("\n\n")
-        print(response.json())
-        print("\n\n")
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
-    return response.json()
-
-
-@app.route("/API/proxy_answer/<int:id>/", methods=['POST'])
-def create_answer(id):
-    # make REST request to video micro service
-    request_data = request.get_json()
-    try:
-        response = requests.post(
-            "http://127.0.0.1:5001/API/answer/"+str(id)+"/", json=request_data)
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
-    return response.json()
-
-
-@app.route("/API/proxy_answer/<int:id>/", methods=['GET'])
-def load_answers(id):
-    # make REST request to video micro service
-    try:
-        response = requests.get(
-            "http://127.0.0.1:5001/API/answer/"+str(id)+"/")
-        if response.status_code != 200:
-            abort(500)
-    except:
-        return "failure"
-    return response.json()
-
-
-@app.route("/QA/<int:id>/<ist_id>/<name>")
-def qa_endpoint(id, ist_id, name):
-    return render_template("qa.html", id=id, ist_id=ist_id, name=name)
+    return render_template("services.html", form=form, title="New Microservice", ist_id=ist_id, name=name)

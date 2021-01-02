@@ -1,6 +1,6 @@
 function updateLogstable() {
     $.ajax({
-        url: '/API/proxy_logs/',
+        url: '/API/logs/',
         type: "GET",
         dataType: "json",
         success: function (data) {

@@ -8,4 +8,4 @@ app.config.from_object(Config)
 
 bootstrap = Bootstrap(app)
 
-from Proxy import proxy, routes
+from Proxy import proxy, routes, database, forms, models

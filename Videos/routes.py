@@ -14,17 +14,6 @@ app.session.expire_on_commit = False
 def index():
    return render_template("index.html")
 
-from sqlalchemy.orm import scoped_session
-from flask import Flask, _app_ctx_stack
-from Videos import models
-from Videos.database import SessionLocal, engine
-import json
-
-models.Base.metadata.create_all(bind=engine)
-
-app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
-
-
 @app.route("/API/videos/", methods=['GET'])
 def returnsVideosJSON():
     return {"videos": listVideosDICT()}
@@ -52,7 +41,7 @@ def returnSingleVideoJSON(id):
     except:
         abort(404)
 
-@app.route("/API/videos/<int:id>/views", methods=['PUT', 'PATCH'])
+@app.route("/API/videos/<int:id>/views/", methods=['PUT', 'PATCH'])
 def newView(id):
     try:
         return {"id":id, "views": newVideoView(id)}

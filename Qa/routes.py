@@ -13,15 +13,19 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 def index():
    return render_template("index.html")
 
-@app.route("/API/question/<int:id>/", methods=['GET'])
-def returnSingleVideoQuestionsJSON(id):
+@app.route("/API/qa/question/", methods=['GET'])
+def returnsQuestionJSON():
+    return {"qa": listQuestionDICT()}
+
+@app.route("/API/qa/question/<int:id>/", methods=['GET'])
+def returnSingleQuestionJSON(id):
     try:
         q = {"question": getQuestionDICT(id)}
         return q
     except:
         abort(404)
 
-@app.route("/API/answer/<int:id>/", methods=['GET'])
+@app.route("/API/qa/answer/<int:id>/", methods=['GET'])
 def returnsAnswerJSON(id):
     try:
         #isto assim vai sempre funcionar no try e nunca vai dar not found mas foi a unica maneira de 
@@ -33,7 +37,7 @@ def returnsAnswerJSON(id):
         abort(404)
 
 
-@app.route("/API/question/<int:id>/", methods=['POST'])
+@app.route("/API/qa/question/<int:id>/", methods=['POST'])
 def createNewQuestion(id):
     j = request.get_json()
     ret = False
@@ -48,7 +52,7 @@ def createNewQuestion(id):
         abort(409)
     #if there is an erro return ERROR 409
 
-@app.route("/API/answer/<int:id>/", methods=['POST'])
+@app.route("/API/qa/answer/<int:id>/", methods=['POST'])
 def createNewAnswer(id):
     j = request.get_json()
     ret = False
