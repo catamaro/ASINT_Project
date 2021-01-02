@@ -20,9 +20,7 @@ def newUser(ist_id, name):
         return None
 
 def getUser(ist_id, name):
-    print(name)
     name.replace("%20", " ")
-    print(name)
     try:
         v = app.session.query(User).filter_by(ist_id=ist_id, name=name).first()
     except:

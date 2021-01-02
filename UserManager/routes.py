@@ -22,7 +22,6 @@ def login():
 
             data = resp.json()
             try:
-                print(data)
                 newUser(data['username'], data['name'])
             except:
                 abort(400)
@@ -50,7 +49,6 @@ def logout():
 
 @app.route('/API/user/<ist_id>/<name>/', methods=['GET'])
 def getUser(ist_id, name):
-    print("im here?")
     try:
         v = getUserDICT(ist_id, name)
         return v

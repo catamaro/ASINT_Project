@@ -148,7 +148,6 @@ def login():
 def get_microservice(microservice, path=None):
     if microservice == "services":
         return {"services": listServicesDICT()}
-    print(microservice)
     request_data = request.get_json()
 
     service_info = app.session.query(MicroServices).filter(
@@ -158,8 +157,6 @@ def get_microservice(microservice, path=None):
     if service_info is not None:
         if path is not None:
             url = url + path
-            print(url)
-
         try:
             if request.method == 'GET':
                 response = requests.get(url=url)

@@ -17,7 +17,6 @@ def newUser_Stats(user):
     stats = app.session.query(User_Stats).filter_by(user=user).first()
     if stats is not None:
         return None
-    print("am I here")
     new_user = User_Stats(user=user)
     try:
         app.session.add(new_user)
@@ -42,7 +41,7 @@ def getUser_StatsDICT(id):
 
 def updateUser_Stats(user, data_stats):
     user_stats = app.session.query(User_Stats).filter(User_Stats.user == user).first()
-    print(user_stats)
+
     if data_stats == "video":
         user_stats.n_videos += 1
         n = user_stats.n_videos
