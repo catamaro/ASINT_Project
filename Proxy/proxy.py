@@ -5,6 +5,8 @@ import requests
 
 
 def verify_user(name, ist_id, page):
+    print(ist_id)
+    print(name)
     if ist_id and name:
         admin = False
         try:

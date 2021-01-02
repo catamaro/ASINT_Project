@@ -6,16 +6,17 @@ from Proxy.models import MicroServices
 from Proxy.forms import ServiceForm
 from Proxy.database import SessionLocal, engine
 
-from sqlalchemy.orm import scoped_session
-import requests
+import requests 
 import json
+
+from sqlalchemy.orm import scoped_session
 
 models.Base.metadata.create_all(bind=engine)
 
 app.session = scoped_session(
     SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
-#----------------------------------logs--------------------------------------#
+#----------------------------------logs and stats-------------------------------------#
 
 # logs handler
 @app.before_request
@@ -82,64 +83,29 @@ def before_req():
         except:
             flash("Logs service is down")
 
-#----------------------------------proxy--------------------------------------#
+#------------------------------------proxy URI----------------------------------------#
 
-""" @app.route("/<pages>/<path:path>")
-def pages(pages, path=None):
-    name = request.args.get("name", None)
-    ist_id = request.args.get("ist_id", None)
-
-    html_url = pages + ".html"
-
-    page, admin, ist_id, name, auth = verify_user(name, ist_id, html_url)
-
-    return render_template(page, name=name, ist_id=ist_id,
-                           auth=auth, admin=admin) """
-
+@app.route("/<path:page>")
 @app.route("/")
-def index():
+def pages(page="index"):
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
+    id = request.args.get("id", None)
 
-    page, admin, ist_id, name, auth = verify_user(name, ist_id, "videos.html")
+    html_url = page + ".html"
 
-    return render_template(page, name=name, ist_id=ist_id,
-                           auth=auth, admin=admin)
-    
-# admin page
-@app.route("/logs")
-def logs():
-    name = request.args.get("name", None)
-    ist_id = request.args.get("ist_id", None)
+    url, admin, ist_id, name, auth = verify_user(name, ist_id, html_url)
 
-    page = verify_user(name, ist_id, "logs.html")
+    return render_template(url, name=name, ist_id=ist_id,
+                           auth=auth, admin=admin, id=id)
 
-    return render_template("logs.html", ist_id=ist_id, name=name)
-
-
-# admin page
-@app.route("/stats")
-def stats():
-    name = request.args.get("name", None)
-    ist_id = request.args.get("ist_id", None)
-
-    page = verify_user(name, ist_id, "statistics.html")
-
-    return render_template("statistics.html", ist_id=ist_id, name=name)
-
-
-@app.route("/QA/<int:id>/<ist_id>/<name>")
-def qa_endpoint(id, ist_id, name):
-    page = verify_user(name, ist_id, "qa.html")
-
-    return render_template(page, name=name, ist_id=ist_id, id=id)
-
-#----------------------------------user--------------------------------------#
+#------------------------------------login URI----------------------------------------#
 
 @app.route("/redirect_login")
 def get_id():
     name = request.args.get("name", None)
     ist_id = request.args.get("id", None)
+
     request_data = {"user": ist_id}
 
     try:
@@ -150,8 +116,7 @@ def get_id():
     except:
         flash("Error retrieving id")
 
-    return redirect(url_for("index", name=name, ist_id=ist_id))
-
+    return redirect("/videos?ist_id=" + ist_id + "&name="+ name)
 
 @app.route("/logout")
 def logout():
@@ -165,19 +130,18 @@ def logout():
     except:
         flash("User Manager service is down")
 
-    return redirect(url_for("index"))
-
+    return redirect("/index")
 
 @app.route("/login")
 def login():
+    # see if app is running in the redirect port in a normal app we could use ping
     if check_port("5004") == 1:
         return redirect("http://127.0.0.1:5004/")
     else:
         flash("User Manager service is down")
-        return redirect(url_for("index"))
+        return redirect("/index")
 
-
-#-------------------------------microservices--------------------------------------#
+#----------------------------------microservices--------------------------------------#
 
 @app.route("/API/<microservice>/<path:path>", methods=['GET', 'POST', 'PUT'])
 @app.route("/API/<microservice>/", methods=['GET', 'POST', 'PUT'])
@@ -213,11 +177,12 @@ def get_microservice(microservice, path=None):
 
     return response.json()
 
-
-@app.route("/API/microservice", methods=['POST', 'GET'])
+@app.route("/microservice", methods=['POST', 'GET'])
 def add_microservice():
     name = request.args.get("name", None)
     ist_id = request.args.get("ist_id", None)
+
+    url = verify_user(name, ist_id, "services.html")
 
     form = ServiceForm()
     if form.validate_on_submit():
@@ -234,6 +199,6 @@ def add_microservice():
             app.session.commit()
             app.session.close()
 
-        return redirect(url_for("index", name=name, ist_id=ist_id))
+        return redirect("/videos?ist_id=" + ist_id + "&name="+ name)
 
-    return render_template("services.html", form=form, title="New Microservice", ist_id=ist_id, name=name)
+    return render_template(url, form=form, title="New Microservice", ist_id=ist_id, name=name)

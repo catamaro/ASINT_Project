@@ -1,7 +1,8 @@
-var pathname = window.location.pathname;
-var video_id = pathname.split("/")[2]
-var user = pathname.split("/")[3]
+const urlParams = new URLSearchParams(window.location.search);
+const user = urlParams.get('ist_id')
+const video_id = urlParams.get('id')
 var q_infor = {}
+
 
 function updateQuestiontable() {
   $.ajax({

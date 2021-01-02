@@ -32,7 +32,7 @@ function updateVideostable() {
             $('#videosTable > tbody:last-child').empty()
             data["videos"].forEach(v => {
                 $('#videosTable > tbody:last-child').
-                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["ist_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='/QA/" + v["video_id"] + "/" + ist_id + "/" + uname + "'>" + "Select" + "</a>" + '</td></tr>');
+                    append('<tr> <td>' + v["video_id"] + '</td><td>' + v["ist_id"] + '</td><td>' + v["description"] + '</td><td id="nviews' + v["video_id"] + '">' + '</td><td>' + "<a href='qa?id=" + v["video_id"] + "&ist_id=" + ist_id + "&name=" + uname + "'>" + "Select" + "</a>" + '</td></tr>');
                 getVideoViews(v["video_id"])
             });
 
