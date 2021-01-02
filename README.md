@@ -1,11 +1,7 @@
 # ASINT_Project
 
 Requirements: 
-    - pip3 install flask_dotenv
-    - pip3 install flask_dance
-    - pip3 install flask_wtf
-    - pip3 install flask_bootstrap
-    - pip3 install sqlalchemy
+    - pip install requirements.txt
 
 To run project:
     - $chmod +x open_apps.sh
