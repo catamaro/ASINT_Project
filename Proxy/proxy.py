@@ -16,12 +16,12 @@ def verify_user(name, ist_id, page):
                 admin = True
         except:
             # if there was a problem retrieving the user information user is automatically logout
-            return "index.html", False, None, None, False
+            return "index.html", None, None, None, None
         # if everything  is okay goes to main page
         return page, admin, ist_id, name, True
     # if there is no user name or ist_id redirects to login
     else:
-        return "index.html", False, None, None, False
+        return "index.html", None, None, None, None
 
 
 

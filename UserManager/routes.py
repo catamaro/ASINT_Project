@@ -6,6 +6,8 @@ from UserManager.user_manager import *
 from UserManager.database import SessionLocal, engine
 from sqlalchemy.orm import scoped_session
 
+import requests
+
 models.Base.metadata.create_all(bind=engine)
 
 app.session = scoped_session(
@@ -15,8 +17,9 @@ app.session.expire_on_commit = False
 
 @app.route('/')
 def login():
-    
+    print("Im here")
     if fenix_blueprint.session.authorized:
+        print("Im here inside")
         try:
             resp = fenix_blueprint.session.get("/api/fenix/v1/person/")
 
@@ -28,7 +31,10 @@ def login():
                 # the arguments were incorrect
         except:
             return redirect(url_for('fenix-example.login'))
+
         return redirect("http://127.0.0.1:5005/redirect_login?id="+data['username']+'&name='+data['name'])
+    
+    print("Im here outsidee")
     return redirect(url_for('fenix-example.login'))
 
 
@@ -38,12 +44,12 @@ def logout():
 
     user = app.session.query(User).filter(
         User.ist_id == data["ist_id"]).first()
-    
+
     user.auth = False
 
     app.session.commit()
     app.session.close()
-
+    
     return {"auth": False}
 
 
@@ -54,4 +60,3 @@ def getUser(ist_id, name):
         return v
     except:
         abort(404)
-

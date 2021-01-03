@@ -9,10 +9,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
-@app.route("/")
-def index():
-   return render_template("index.html")
-
 @app.route("/API/qa/question/<int:id>/", methods=['GET'])
 def returnSingleQuestionJSON(id):
     try:
