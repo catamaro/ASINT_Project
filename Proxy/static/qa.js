@@ -86,7 +86,7 @@ function addNewQuestion(curr_time, text) {
 }
 function addNewAnswer(a_text) {
 
-  let requestData = { "a_user": user, "a_text": a_text, "a_uname":uname }
+  let requestData = { "user": user, "a_text": a_text, "a_uname":uname }
   $.ajax({
     url: '/API/qa/answer/' + question_num + '/',
     type: "POST",

@@ -47,7 +47,7 @@ def createNewAnswer(id):
     j = request.get_json()
     ret = False
     try:
-        ret = newAnswer(id, j['a_user'], j['a_uname'], j['a_text'])
+        ret = newAnswer(id, j['user'], j['a_uname'], j['a_text'])
     except:
         abort(400)
         #the arguments were incorrect
