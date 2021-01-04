@@ -1,7 +1,7 @@
 from flask import Flask,  _app_ctx_stack
 from flask import abort, render_template, redirect, session, url_for, request, flash, jsonify
 from Proxy import app, models
-from Proxy.proxy import check_port, listServicesDICT, verify_user
+from Proxy.proxy import *
 from Proxy.models import MicroServices
 from Proxy.forms import ServiceForm
 from Proxy.database import SessionLocal, engine
@@ -18,8 +18,6 @@ app.session = scoped_session(
 
 #----------------------------------logs and stats-------------------------------------#
 
-# logs handler
-
 
 @app.before_request
 def before_req():
@@ -32,7 +30,7 @@ def before_req():
             # make REST request to logs micro service
             request_data = {"IP": IP, "endpoint": endpoint}
             try:
-                resp = requests.post("http://127.0.0.1:5003/API/logs/event",
+                resp = requests.post("http://127.0.0.1:5003/API/logs/event/",
                                      json=json.dumps(request_data))
             except:
                 flash("Logs service is down")
@@ -54,19 +52,19 @@ def before_req():
         data = {"data_type": data_type, "content": content, "user": user}
         try:
             requests.post(
-                "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
+                "http://127.0.0.1:5003/API/logs/data_creation/", json=json.dumps(data))
             requests.put(
-                "http://127.0.0.1:5006/API/stats/update/"+user+"/"+data_type)
+                "http://127.0.0.1:5006/API/stats/update/"+user+"/"+data_type+"/")
         except:
             flash("Logs service is down")
 
         try:
             requests.post(
-                "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
+                "http://127.0.0.1:5003/API/logs/data_creation/", json=json.dumps(data))
         except:
             flash("Logs service is down")
 
-    elif(request.method == 'PUT' or request.method == 'PATCH'):
+    elif(request.method == 'PUT'):
         url = request.url.split('/')
         video = url[5]
         if request.url.find("view") != -1:
@@ -79,9 +77,9 @@ def before_req():
         data = {"data_type": data_type, "content": content, "user": user}
         try:
             requests.post(
-                "http://127.0.0.1:5003/API/logs/data_creation", json=json.dumps(data))
+                "http://127.0.0.1:5003/API/logs/data_creation/", json=json.dumps(data))
             requests.put(
-                "http://127.0.0.1:5006/API/stats/update/"+user+"/"+data_type)
+                "http://127.0.0.1:5006/API/stats/update/"+user+"/"+data_type+"/")
         except:
             flash("Logs service is down")
 
@@ -150,36 +148,49 @@ def login():
 #----------------------------------microservices--------------------------------------#
 
 
-@app.route("/API/<microservice>/<path:path>", methods=['GET', 'POST', 'PUT'])
-@app.route("/API/<microservice>/", methods=['GET', 'POST', 'PUT'])
+@app.route("/API/<microservice>/<path:path>", methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route("/API/<microservice>", methods=['GET', 'POST', 'PUT'])
 def get_microservice(microservice, path=None):
+
     if microservice == "services":
-        return {"services": listServicesDICT()}
+        if(path is not None):
+            path_splited = path.split("/")
+            if path_splited[0] == "delete":
+                return {"services": deleteService(path_splited[1])}
+        else:        
+            return {"services": listServicesDICT()}
+
     request_data = request.get_json()
 
     service_info = app.session.query(MicroServices).filter(
-        MicroServices.name == microservice).first()
+        MicroServices.name == microservice).all()
 
-    url = service_info.endpoint
-    if service_info is not None:
-        if path is not None:
-            url = url + path
-        try:
-            if request.method == 'GET':
-                response = requests.get(url=url)
-            elif request.method == 'POST':
-                response = requests.post(url=url, json=request_data)
-            elif request.method == 'PUT':
-                response = requests.put(url=url, json=request_data)
+    for service in service_info:
 
-            if response.status_code != 200:
-                abort(response.status_code)
-        except:
-            return jsonify("failure"), 500
-    else:
-        return jsonify("failure"), 404
+        url = service.endpoint
+        if service is not None:
+            if path is not None:
+                url = url + path
+            try:
+                if request.method == 'GET':
+                    response = requests.get(url=url)
+                elif request.method == 'POST':
+                    response = requests.post(url=url, json=request_data)
+                elif request.method == 'PUT':
+                    response = requests.put(url=url, json=request_data)
 
-    return response.json()
+                if response.status_code != 200:
+                    abort(response.status_code)
+            except:
+                code = 500
+                continue
+        else:
+            code = 404
+            continue
+
+        return response.json()
+
+    return jsonify("failure"), code
 
 
 @app.route("/microservice", methods=['POST', 'GET'])
@@ -192,13 +203,14 @@ def add_microservice():
     form = ServiceForm()
     if form.validate_on_submit():
 
-        service_info = app.session.query(MicroServices).filter(
-            MicroServices.name == form.name.data).first()
+        service_info = app.session.query(MicroServices).filter_by(
+            name=form.name.data, port=form.port.data).first()
 
         endpoint = "http://127.0.0.1:" + form.port.data + "/API/" + form.name.data + "/"
 
         if service_info is None:
-            newService = MicroServices(name=form.name.data, endpoint=endpoint)
+            newService = MicroServices(
+                name=form.name.data, port=form.port.data, endpoint=endpoint)
 
             app.session.add(newService)
             app.session.commit()

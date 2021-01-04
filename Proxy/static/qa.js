@@ -1,5 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const user = urlParams.get('ist_id')
+const uname = urlParams.get('name')
 const video_id = urlParams.get('id')
 var q_infor = {}
 
@@ -10,17 +11,17 @@ function updateQuestiontable() {
     type: "GET",
     dataType: "json",
     success: function (data) {
-      i = 0
       if (data === "failure") {
         handleError(xhr, status, ''); // manually trigger callback
       }
+      var i=0
       q_infor = data["question"]
       $('#questionTable > tbody:last-child').empty()
       data["question"].forEach(q => {
         $('#questionTable > tbody:last-child').
           append('<tr> <td>' + i + '</td><td>' + q["curr_time"] + '</td><td>' + q["text"] + '</td><td>' + "<button type='button' onclick='showanswers(this);' class='btn btn-default'>" + "Show answers" + "</button>" + '</td></tr>');
           i++
-      });
+        });
     },
     error: function (xhr, textStatus, errorThrown) {
       alert('Question and Answers service is down');
@@ -32,10 +33,12 @@ function showanswers(ctl) {
   var _row = $(ctl).parents("tr");
   var cols = _row.children("td");
   question_num = _row.children("td")[0].innerHTML
+  
   $('#question_info').empty()
-  $('#question_info').append('<br><h3>Question: </h3>' + q_infor[question_num]["Question"] +" - "+q_infor[question_num]["text"] + '<h3>Time: </h3>'+ q_infor[question_num]["curr_time"]
-        + "<h3>User: </h3>" + q_infor[question_num]["user"] + "</h3>");
-  updateAnswertable(q_infor[question_num]["Question"])
+  $('#question_info').append('<br><h3>Question: </h3>' + question_num +" - "+q_infor[question_num]["text"] + '<h3>Time: </h3>'+ q_infor[question_num]["curr_time"]
+        + "<h3>User: </h3>" + q_infor[question_num]["user"] + " - " + q_infor[question_num]["uname"]);
+  
+  updateAnswertable(question_num)
   answershow()
 }
 function updateAnswertable(question_num) {
@@ -47,13 +50,14 @@ function updateAnswertable(question_num) {
       if (data === "failure") {
         handleError(xhr, status, ''); // manually trigger callback
       }
-
+      var i=0
       $('#answerTable > tbody:last-child').empty()
       data["answer"].forEach(a => {
-        console.log(a["Answer"] + " " + a["question_id"] + " " + a["user"] + " " + a["a_text"])
+        console.log(a["Answer"] + " " + a["question_id"] + " " + a["a_user"] + " " + a["a_text"])
         $('#answerTable > tbody:last-child').
-          append('<tr> <td>' + a["Answer"] + '</td><td>' + a["question_id"] + '</td><td>' + a["user"] + '</td><td>' + a["a_text"] + '</td></tr>');
-      });
+          append('<tr> <td>' + i + '</td><td>' + a["a_user"] + '</td><td>' + a["a_uname"] + '</td><td>' + a["a_text"] + '</td></tr>');
+        i++
+        });
     },
     error: function (xhr, textStatus, errorThrown) {
       alert('Question and Answers service is down');
@@ -61,7 +65,7 @@ function updateAnswertable(question_num) {
   });
 }
 function addNewQuestion(curr_time, text) {
-  let requestData = { "curr_time": curr_time, "user": user, "text": text }
+  let requestData = { "curr_time": curr_time, "uname":uname, "user": user, "text": text }
   $.ajax({
     url: '/API/qa/question/' + video_id + '/',
     type: "POST",
@@ -72,8 +76,7 @@ function addNewQuestion(curr_time, text) {
       if (data === "failure") {
         handleError(xhr, status, ''); // manually trigger callback
       }
-      console.log("response for question creation" + data)
-      console.log(data)
+
       updateQuestiontable()
     },
     error: function (xhr, textStatus, errorThrown) {
@@ -83,7 +86,7 @@ function addNewQuestion(curr_time, text) {
 }
 function addNewAnswer(a_text) {
 
-  let requestData = { "user": user, "a_text": a_text }
+  let requestData = { "a_user": user, "a_text": a_text, "a_uname":uname }
   $.ajax({
     url: '/API/qa/answer/' + question_num + '/',
     type: "POST",

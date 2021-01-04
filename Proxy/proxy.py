@@ -50,3 +50,8 @@ def listServicesDICT():
         sv = s.to_dictionary()
         ret_list.append(sv)
     return ret_list
+
+def deleteService(id):
+    app.session.query(MicroServices).filter_by(id=id).delete()
+    app.session.commit()
+    return {"delete":"success"}

@@ -53,8 +53,8 @@ def getQuestionDICT(id):
         ret_list.append(quest)
     return ret_list
 
-def newQuestion(video_id, curr_time, user, text):
-    quest =  Question(video_id = video_id, curr_time = curr_time, user = user, text = text)
+def newQuestion(video_id, curr_time, user, uname, text):
+    quest =  Question(video_id = video_id, curr_time = curr_time, user = user, uname = uname, text = text)
     try:
         app.session.add(quest)
         app.session.commit()
@@ -64,8 +64,8 @@ def newQuestion(video_id, curr_time, user, text):
     except:
         return None
 
-def newAnswer(question_id, a_user, a_text):
-    answ = Answer(question_id = question_id, a_user = a_user, a_text = a_text)
+def newAnswer(question_id, a_user, a_uname, a_text):
+    answ = Answer(question_id = question_id, a_user = a_user, a_uname = a_uname, a_text = a_text)
     try:
         app.session.add(answ)
         app.session.commit()

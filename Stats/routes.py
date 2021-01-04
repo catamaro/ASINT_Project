@@ -19,7 +19,7 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 def returnStatsJSON():
     return {"stats": listStatsDICT()}
 
-@app.route('/API/stats', methods = ["POST"])
+@app.route('/API/stats/', methods = ["POST"])
 def create_stats():
     j = request.get_json()
     j = json.loads(j)
@@ -34,7 +34,7 @@ def create_stats():
     else:
         return "id is already in uses"
 
-@app.route("/API/stats/update/<user>/<data_type>", methods=['PUT', 'PATCH'])
+@app.route("/API/stats/update/<user>/<data_type>/", methods=['PUT', 'PATCH'])
 def newStats(user, data_type):
     try:
         return {"stats": updateUser_Stats(user,data_type)}

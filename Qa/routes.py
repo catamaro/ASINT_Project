@@ -20,8 +20,6 @@ def returnSingleQuestionJSON(id):
 @app.route("/API/qa/answer/<int:id>/", methods=['GET'])
 def returnsAnswerJSON(id):
     try:
-        #isto assim vai sempre funcionar no try e nunca vai dar not found mas foi a unica maneira de 
-        # meter aquilo no dict à hora que estava a fazer o código
         answer = {"answer": getAnswerDICT(id)}
         return answer
     except Exception as e:
@@ -34,7 +32,7 @@ def createNewQuestion(id):
     j = request.get_json()
     ret = False
     try:
-        ret = newQuestion(id, j['curr_time'], j['user'], j['text'])
+        ret = newQuestion(id, j['curr_time'], j['user'], j['uname'], j['text'])
     except:
         abort(400)
         #the arguments were incorrect
@@ -49,7 +47,7 @@ def createNewAnswer(id):
     j = request.get_json()
     ret = False
     try:
-        ret = newAnswer(id, j['user'], j['a_text'])
+        ret = newAnswer(id, j['a_user'], j['a_uname'], j['a_text'])
     except:
         abort(400)
         #the arguments were incorrect

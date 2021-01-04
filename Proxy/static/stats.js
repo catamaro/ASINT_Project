@@ -1,6 +1,6 @@
 function updateStatstable() {
     $.ajax({
-        url: '/API/stats/',
+        url: '/API/stats',
         type: "GET",
         dataType: "json",
         success: function (data) {

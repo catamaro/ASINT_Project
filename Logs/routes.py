@@ -20,7 +20,7 @@ def returnLogsJSON():
     lists = listLogsDICT()
     return {"events": lists[0], "data_creation": lists[1]}
 
-@app.route('/API/logs/event', methods = ["POST"])
+@app.route('/API/logs/event/', methods = ["POST"])
 def create_log_event():
     j = request.get_json()
     j = json.loads(j)
@@ -35,7 +35,7 @@ def create_log_event():
     else:
         abort(409)
 
-@app.route('/API/logs/data_creation', methods = ["POST"])
+@app.route('/API/logs/data_creation/', methods = ["POST"])
 def create_log_data_creation():
     j = request.get_json()
     j = json.loads(j)

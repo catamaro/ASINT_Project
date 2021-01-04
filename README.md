@@ -1,7 +1,7 @@
 # ASINT_Project
 
 Requirements: 
-    - pip install requirements.txt
+    - $pip install requirements.txt
 
 To run project:
     - $chmod +x open_apps.sh

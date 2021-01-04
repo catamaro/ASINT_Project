@@ -17,9 +17,7 @@ app.session.expire_on_commit = False
 
 @app.route('/')
 def login():
-    print("Im here")
     if fenix_blueprint.session.authorized:
-        print("Im here inside")
         try:
             resp = fenix_blueprint.session.get("/api/fenix/v1/person/")
 
@@ -34,11 +32,10 @@ def login():
 
         return redirect("http://127.0.0.1:5005/redirect_login?id="+data['username']+'&name='+data['name'])
     
-    print("Im here outsidee")
     return redirect(url_for('fenix-example.login'))
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout/', methods=['POST'])
 def logout():
     data = request.get_json()
 
@@ -49,7 +46,7 @@ def logout():
 
     app.session.commit()
     app.session.close()
-    
+
     return {"auth": False}
 
 

@@ -21,7 +21,7 @@ function getVideoViews(videoID) {
 }
 function updateVideostable() {
     $.ajax({
-        url: '/API/videos/',
+        url: '/API/videos',
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -48,7 +48,7 @@ function updateVideostable() {
 function addNewVideo(url, description) {
     let requestData = {"description": description, 'url': url , 'user': ist_id, 'name': uname}
     $.ajax({
-        url: '/API/videos/',
+        url: '/API/videos',
         type: "POST",
         dataType: "json",
         contentType: 'application/json',
