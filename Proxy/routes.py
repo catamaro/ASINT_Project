@@ -111,12 +111,12 @@ def get_id():
     request_data = {"user": ist_id}
 
     try:
-        resp_stats = requests.post("http://127.0.0.1:5006/API/stats",
+        resp_stats = requests.post("http://127.0.0.1:5006/API/stats/",
                                    json=json.dumps(request_data))
         if resp_stats.status_code != 200:
             abort(500)
     except:
-        flash("Error retrieving id")
+        flash("Statistics service is down")
 
     return redirect("/videos?ist_id=" + ist_id + "&name=" + name)
 
@@ -129,7 +129,7 @@ def logout():
     request_data = {"ist_id": ist_id}
 
     try:
-        resp = requests.post("http://127.0.0.1:5004/logout", json=request_data)
+        resp = requests.post("http://127.0.0.1:5004/logout/", json=request_data)
     except:
         flash("User Manager service is down")
 
