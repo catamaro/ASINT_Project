@@ -1,13 +1,16 @@
 # ASINT_Project
 
 Requirements: 
+
     - $pip install requirements.txt
 
 To run project:
+
     - $chmod +x open_apps.sh
     - $./open_apps.sh
 
 Microservices:
+
     - Videos
     - QA
     - User Manager
@@ -15,6 +18,7 @@ Microservices:
     - Stats
 
 Proxy Funcionalities:
+
     - Add new microservices without changing the proxy code
         - requires a port number where the microservice is running
         - requires a name that must be the same from the API endpoint
